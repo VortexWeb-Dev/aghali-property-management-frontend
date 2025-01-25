@@ -35,7 +35,7 @@ const AddProperty = () => {
     feature: [],
     amenities: [],
     photos: [],
-    attachments: [],
+    attachments:[]
   });
 
   const handleChange = (e) => {
@@ -43,16 +43,48 @@ const AddProperty = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    try {
+      const uploadedUrls = await Promise.all(
+        files.map(async (file) => {
+          const { data } = await axios.post("/files/presigned-url", {
+            key: file.name,
+            contentType: file.type,
+          });
+
+          // Upload file to S3 using the pre-signed URL
+          await axios.put(data.presignedUrl, file, {
+            headers: { "Content-Type": file.type },
+          });
+
+          return data.publicUrl; // Store the public URL
+        })
+      );
+      
+      const imageFiles = files.filter(file => file.type.startsWith('image/'));
+      const nonImageFiles = files.filter(file => !file.type.startsWith('image/'));
+
+      setFormData((prev) => ({
+        ...prev,
+        ...(imageFiles.length > 0 && { photos: uploadedUrls }),
+        ...(nonImageFiles.length > 0 && { attachments: uploadedUrls })
+      }));
+
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/properties", formData); 
+      await axios.post("/api/properties", formData);
       navigate("/properties"); // Redirect after successful submission
     } catch (error) {
       console.error("Error creating property:", error);
     }
   };
-  
 
   return (
     <div className="p-6">
@@ -84,14 +116,7 @@ const AddProperty = () => {
               name="photos"
               multiple
               className="block w-full border p-2 rounded"
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  photos: Array.from(e.target.files).map((file) =>
-                    URL.createObjectURL(file)
-                  ),
-                }))
-              }
+              onChange={handleFileUpload}
             />
           </div>
         </div>
@@ -118,47 +143,70 @@ const AddProperty = () => {
         <div>
           <h2 className="text-xl font-bold mb-2">Property Type</h2>
           <div className="flex gap-4">
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="type"
-                value="Single Unit"
-                checked={formData.type === "Single Unit"}
-                onChange={handleChange}
-              />
-              Single Unit
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="type"
-                value="Multi Unit"
-                checked={formData.type === "Multi Unit"}
-                onChange={handleChange}
-              />
-              Multi Unit
-            </label>
+            <div className="p-4 border border-black rounded-md flex-1">
+              <label className="items-center gap-2">
+                <input
+                  type="radio"
+                  name="type"
+                  value="Single Unit"
+                  checked={formData.type === "Single Unit"}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                Single Unit
+              </label>
+              <p className="inline-block font-thin pt-4">
+                Single family rentals (SFR) are rentals in which there is only
+                one rental associated with a specific address. This type of
+                property does not allow adding any units/rooms.
+              </p>
+            </div>
+
+            <div className="p-4 border border-black rounded-md flex-1">
+              <label className="items-center gap-2">
+                <input
+                  type="radio"
+                  name="type"
+                  value="Multi Unit"
+                  checked={formData.type === "Multi Unit"}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                Multi Unit
+              </label>
+              <p className="inline-block font-thin pt-4">
+                Multi-unit property are for rentals in which there are multiple
+                rental units per a single address.
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Additional Information */}
         <div className="grid grid-cols-2 gap-4">
-          <input
-            type="number"
-            name="beds"
-            placeholder="Beds"
-            className="border p-2 rounded w-full"
-            value={formData.beds}
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            name="baths"
-            placeholder="Baths"
-            className="border p-2 rounded w-full"
-            value={formData.baths}
-            onChange={handleChange}
-          />
+          <div className="inline-block">
+            <span>Beds</span>
+            <input
+              type="number"
+              name="beds"
+              placeholder="Beds"
+              className="border p-2 rounded w-full"
+              value={formData.beds}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="inline-block">
+            <span>Baths</span>
+            <input
+              type="number"
+              name="baths"
+              placeholder="Baths"
+              className="border p-2 rounded w-full"
+              value={formData.baths}
+              onChange={handleChange}
+            />
+          </div>
           <input
             type="number"
             name="size"
@@ -216,6 +264,20 @@ const AddProperty = () => {
               }))
             }
           />
+        </div>
+
+        <div>
+        <h2 className="text-xl font-bold mb-2">Upload Attachment</h2>
+        <div className="border border-dashed rounded-lg border-gray-700 h-36 flex justify-center items-center">
+            <span className="text-xl text-green-500">Upload</span>
+            <input
+              type="file"
+              name="attachments"
+              multiple
+              className="block w-full border p-2 rounded"
+              onChange={handleFileUpload}
+            />
+        </div>
         </div>
 
         <button
