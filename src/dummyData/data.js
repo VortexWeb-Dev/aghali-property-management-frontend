@@ -80,11 +80,11 @@ export const contacts = [
   ];
 
  export const links = [
-    { icon: Eye, text: 'Dashboard', to: '/' },
+    // { icon: Eye, text: 'Dashboard', to: '/' },
     { icon: Building2, text: 'Properties', to: '/properties' },
-    { icon: WalletCards, text: 'Accounting', to: '/accounting' },
+    { icon: WalletCards, text: 'Accounting', to: '/accountings' },
     { icon: Users2, text: 'Contacts', to: '/contacts' },
-    { icon: Wrench, text: 'Maintenance', to: '/maintenance' },
+    { icon: Wrench, text: 'Maintenance', to: '/maintenances' },
     { icon: ListPlus, text: 'Listings', to: '/listings' }
   ];
 

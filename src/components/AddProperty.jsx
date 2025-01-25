@@ -35,7 +35,7 @@ const AddProperty = () => {
     feature: [],
     amenities: [],
     photos: [],
-    attachments:[]
+    attachments: [],
   });
 
   const handleChange = (e) => {
@@ -48,29 +48,31 @@ const AddProperty = () => {
     try {
       const uploadedUrls = await Promise.all(
         files.map(async (file) => {
-          const { data } = await axios.post("/files/presigned-url", {
+          const { data } = await axios.post("/api/files/presigned-url", {
             key: file.name,
             contentType: file.type,
           });
 
           // Upload file to S3 using the pre-signed URL
-          await axios.put(data.presignedUrl, file, {
+          await axios.put(data.presignedUrl.presignedUrl, file, {
             headers: { "Content-Type": file.type },
           });
 
-          return data.publicUrl; // Store the public URL
+          return `https://aghali.s3.ap-south-1.amazonaws.com/${file.name}`;
+          // return data.publicUrl; // Store the public URL
         })
       );
-      
-      const imageFiles = files.filter(file => file.type.startsWith('image/'));
-      const nonImageFiles = files.filter(file => !file.type.startsWith('image/'));
+
+      const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+      const nonImageFiles = files.filter(
+        (file) => !file.type.startsWith("image/")
+      );
 
       setFormData((prev) => ({
         ...prev,
         ...(imageFiles.length > 0 && { photos: uploadedUrls }),
-        ...(nonImageFiles.length > 0 && { attachments: uploadedUrls })
+        ...(nonImageFiles.length > 0 && { attachments: uploadedUrls }),
       }));
-
     } catch (error) {
       console.error("Error uploading files:", error);
     }
@@ -266,25 +268,36 @@ const AddProperty = () => {
           />
         </div>
 
-        <div>
         <h2 className="text-xl font-bold mb-2">Upload Attachment</h2>
         <div className="border border-dashed rounded-lg border-gray-700 h-36 flex justify-center items-center">
-            <span className="text-xl text-green-500">Upload</span>
+          <div className="flex flex-col items-center">
+            {/* Hidden File Input */}
             <input
+              id="file-upload"
               type="file"
               name="attachments"
               multiple
-              className="block w-full border p-2 rounded"
+              className="hidden"
               onChange={handleFileUpload}
             />
+            {/* Label as Stylized Button */}
+            <label
+              htmlFor="file-upload"
+              className="flex flex-col items-center cursor-pointer text-green-600 hover:text-green-500"
+            >
+              <div className="flex justify-center items-center w-16 h-16 bg-green-100 border-2 border-green-600 rounded-full">
+                <span className="text-3xl font-bold">+</span>
+              </div>
+              <span className="mt-2 text-lg font-medium">Upload</span>
+              <span className="font-thin">Store documents and templates</span>
+            </label>
+          </div>
         </div>
-        </div>
-
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full mt-4"
         >
-          Submit
+          Create
         </button>
       </form>
     </div>

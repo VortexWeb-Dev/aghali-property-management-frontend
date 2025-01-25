@@ -13,6 +13,7 @@ import AccountingPage from './pages/AccountingPage';
 import MaintenancePage from './pages/Maintenances';
 import ListingsPage from './pages/Listings';
 import Navbar from './components/Navbar';
+import toast, { Toaster } from 'react-hot-toast';
 
 
 
@@ -82,7 +83,7 @@ const App = () => {
         </div>
         
         <main className="flex-1 overflow-x-hidden">
-          <Navbar/>
+          {/* <Navbar/> */}
           
           <div className="md:hidden p-4 bg-white shadow-md">
             <button onClick={toggleSidebar}>
@@ -91,18 +92,19 @@ const App = () => {
           </div>
           
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<PropertyResolver />} />
             <Route path="/properties" element={<PropertyResolver />} />
             <Route path="/properties/add" element={<AddProperty />} />
-            <Route path="/accounting" element={<AccountingPage />} />
+            <Route path="/accountings" element={<AccountingPage />} />
             <Route path="/contacts" element={<Contacts />} />
-            <Route path="/maintenance" element={<MaintenancePage />} />
+            <Route path="/maintenances" element={<MaintenancePage />} />
             <Route path="/listings" element={< ListingsPage/>} />
             <Route path="/listings/add" element={<AddListing />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
       </div>
+      <Toaster />
     </Router>
   );
 };

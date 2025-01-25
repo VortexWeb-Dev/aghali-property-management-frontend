@@ -3,30 +3,30 @@ import { Plus } from 'lucide-react';
 import axios from 'axios';
 import { Navigate, useNavigate } from 'react-router-dom';
 import PropertyCard from './../components/PropertyCard';
-import {properties as dummyProperties} from './../dummyData/data'
+// import {properties as dummyProperties} from './../dummyData/data'
 
 export const PropertiesPage = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   const fetchProperties = async () => {
-  //     try {
-  //       const response = await axios.get('/api/properties');
-  //       setProperties(response.data);
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get('/api/properties');
+        setProperties(response.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchProperties();
-  // }, []);
+    fetchProperties();
+  }, []);
 
-  // if (loading) return <div className="p-6">Loading properties...</div>;
-  // if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
+  if (loading) return <div className="p-6">Loading properties...</div>;
+  if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
 
   return (
     <div className="p-6">
@@ -49,7 +49,7 @@ export const PropertiesPage = () => {
 
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {dummyProperties.map((property, index) => (
+        {properties.map((property, index) => (
           <PropertyCard key={property.id || index} {...property} />
         ))}
       </div>

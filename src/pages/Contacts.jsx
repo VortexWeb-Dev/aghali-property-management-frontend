@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AddContactButton from '../components/ContactButton';
+import AddContactButton from '../components/AddContactButton';
 import ContactCard from '../components/ContactCard';
 
 const Contacts = () => {
@@ -81,7 +81,7 @@ const Contacts = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {contacts.map((contact) => (
-            <ContactCard key={contact.id} {...contact} />
+            <ContactCard key={contact.id} props={contact} setContacts={setContacts} />
           ))}
         </div>
       )}

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import PropertyDetails from './PropertyDetails'
-import DeleteButton from "./DeleteProperty";
+import DeleteEntity from "./DeleteEntity";
+import UpdatePropertyButton from "./UpdatePropertyButton";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Property = ({ id }) => {
   const [propertyData, setPropertyData] = useState(null);
@@ -30,47 +32,82 @@ const Property = ({ id }) => {
   }, [id]);
 
   // Handle input changes for the update form
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewPropertyData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setNewPropertyData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value
+  //   }));
+  // };
 
   // Handle update request
-  const handleUpdate = async () => {
+  // const handleUpdate = async () => {
+  //   try {
+  //     const response = await axios.patch(`/api/properties/${id}`, newPropertyData);
+  //     if (response.status === 200) {
+  //       setPropertyData({
+  //         ...propertyData,
+  //         ...newPropertyData, // Update the property data with new values
+  //       });
+  //       toast.success("Property updated successfully!");
+  //     }
+  //   } catch (error) {
+  //     toast.success("Error updating property");
+  //   }
+  // };
+  const onUpdatePropertyData = async (updatedPropertyData) => {
     try {
-      const response = await axios.patch(`/api/properties/${id}`, newPropertyData);
+      // Make a PATCH request to the backend to update the PropertyData
+      const response = await axios.patch(
+        `/api/properties/${updatedPropertyData.id}`,
+        updatedPropertyData
+      );
+
       if (response.status === 200) {
-        setPropertyData({
+        console.log("PropertyData updated successfully:", response.data);
+
+        // Update the PropertyData in your state (if applicable)
+        // setPropertyData((prevPropertyData) =>
+        //   prevPropertyData.map((PropertyData) =>
+        //     PropertyData.id === updatedPropertyData.id
+        //       ? { ...PropertyData, ...updatedPropertyData }
+        //       : PropertyData
+        //   )
+        // );
+
+            setPropertyData({
           ...propertyData,
-          ...newPropertyData, // Update the property data with new values
+          ...updatedPropertyData, // Update the property data with new values
         });
-        alert("Property updated successfully!");
+
+        toast.success("PropertyData updated successfully!");
       }
     } catch (error) {
-      alert("Error updating property");
+      console.error("Error updating PropertyData:", error);
+      toast.success("Failed to update PropertyData. Please try again.");
     }
-  };
 
+  };
   if (loading) return <div className="p-6">Loading property details...</div>;
   if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
   if (!propertyData) return <div className="p-6">No property data available</div>;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-200 p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-purple-300 p-4">
       {/* View Property Title */}
-      <div className="flex items-center justify-end px-16">
-      <h1 className="text-3xl font-bold m-10">View Property {id}</h1>
-      <DeleteButton propertyId={id} />
+      <div className="flex items-center justify-end px-16 bg">
+      <h1 className="text-3xl font-bold m-10">View Property Details</h1>
+      <div className="gap-10 flex ">
+      <DeleteEntity entityName="properties" entityId={id} />
+      <UpdatePropertyButton onUpdateProperty={onUpdatePropertyData} existingProperty={propertyData}/>
+      </div>
       </div>
 
       <div className="bg-gray-100 w-full min-h-screen mx-8 px-10 rounded-2xl shadow-lg ">
         <div className="mx-8 mt-4">Property Photo</div>
         <div className="flex justify-center">
           <img
-            src="hero.jpeg"
+            src={propertyData.photos[0]}
             alt=""
             className="m-8 rounded-2xl shadow-2xl h-96 w-[1600px] "
           />
@@ -80,40 +117,6 @@ const Property = ({ id }) => {
         <div className="text-2xl text-gray-500 mx-10">General Information</div>
         <PropertyDetails propertyData={propertyData}></PropertyDetails>
 
-        {/* Update Property Form */}
-        {/* <div className="mt-6">
-          <h2 className="text-xl font-semibold">Update Property Details</h2>
-          <input
-            type="text"
-            name="name"
-            placeholder="Property Name"
-            value={newPropertyData.name || propertyData.name}
-            onChange={handleInputChange}
-            className="mt-2 p-2 w-80 border rounded"
-          />
-          <input
-            type="number"
-            name="price"
-            placeholder="Property Price"
-            value={newPropertyData.price || propertyData.price}
-            onChange={handleInputChange}
-            className="mt-2 p-2 w-80 border rounded"
-          />
-          <input
-            type="text"
-            name="description"
-            placeholder="Property Description"
-            value={newPropertyData.description || propertyData.description}
-            onChange={handleInputChange}
-            className="mt-2 p-2 w-80 border rounded"
-          />
-          <button
-            onClick={handleUpdate}
-            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded"
-          >
-            Update Property
-          </button>
-        </div> */}
       </div>
     </div>
   );

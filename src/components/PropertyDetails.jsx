@@ -3,19 +3,6 @@ import FormData from './FormData';
 import PropertyFeature from './BasicTags'
 
 const RealEstateForm = ({propertyData}) => {
-  // Sample property data
-//   const propertyData = {
-//     address: '123 Elm St, Springfield, IL',
-//     price: '$450,000',
-//     bedrooms: 3,
-//     bathrooms: 2,
-//     sqft: 2500,
-//     yearBuilt: 2015,
-//     type: 'Single Family',
-//     status: 'For Sale',
-//   };
-
-
 
   // Common styles for the form fields
   const inputClass = "w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600 ";

@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 
-const PropertyCard = ({ id, name, location, type, amenities, imageUrl }) => (
-
+const PropertyCard = ({ id, name, location, type, amenities, photos }) => (
 
     <div className="bg-white rounded-lg overflow-hidden shadow-md">
       <img 
-        src={"hero.jpeg"} 
+        src={photos[0]}
         alt={name} 
         className="w-full h-48 object-cover bg-blue-100"
       />

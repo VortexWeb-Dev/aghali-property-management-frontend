@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import AddAccountingButton from './../components/AddAccountingButton';
+import DeleteEntity from '../components/DeleteEntity';
 
 const AccountingPage = () => {
   const [accountings, setAccountings] = useState([]);
@@ -34,13 +35,13 @@ const AccountingPage = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Accounting</h1>
+      <h1 className="text-2xl font-bold mb-6">View Your Accountings</h1>
 
       <div className="flex justify-between items-center mb-6">
         <div>
           <AddAccountingButton onAddTransaction={handleAddTransaction} />
         </div>
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
             <ArrowUp className="w-5 h-5" />
             Income
@@ -49,7 +50,7 @@ const AccountingPage = () => {
             <ArrowDown className="w-5 h-5" />
             Expense
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -62,8 +63,10 @@ const AccountingPage = () => {
               <th className="py-3 px-4 text-left">Due Date</th>
               <th className="py-3 px-4 text-left">Status</th>
               <th className="py-3 px-4 text-left">Payment Method</th>
-              <th className="py-3 px-4 text-left">Invoice</th>
+              <th className="py-3 px-4 text-left">Invoice Number</th>
               <th className="py-3 px-4 text-left">Notes</th>
+              <th className="py-3 px-4 text-left"></th>
+              
             </tr>
           </thead>
           <tbody>
@@ -77,6 +80,7 @@ const AccountingPage = () => {
                 <td className="py-3 px-4">{accounting.payment_method}</td>
                 <td className="py-3 px-4">{accounting.invoice_number}</td>
                 <td className="py-3 px-4">{accounting.notes}</td>
+                <td className="py-3 px-4"><DeleteEntity entityId={accounting.id} entityName="accountings"/></td>
               </tr>
             ))}
           </tbody>

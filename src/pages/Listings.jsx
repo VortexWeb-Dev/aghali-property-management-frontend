@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PlusCircle } from 'lucide-react';
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
+import DeleteEntity from '../components/DeleteEntity';
 
 const ListingsPage = () => {
-
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
         const response = await axios.get('/api/listings');
-        setListings(response.data);
+        const [listingsArray] = response.data; // Extract the first array from the API response
+        const validListings = listingsArray.filter(item => typeof item === 'object' && item !== null); // Filter valid objects
+        setListings(validListings);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -35,7 +34,10 @@ const ListingsPage = () => {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Listings</h1>
-        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors" onClick={() => navigate('/listings/add')}>
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          onClick={() => navigate('/listings/add')}
+        >
           <PlusCircle className="w-5 h-5" />
           Add Listing
         </button>
@@ -49,7 +51,11 @@ const ListingsPage = () => {
                 <h3 className="text-lg font-medium">{listing.title}</h3>
                 <p className="text-gray-500">{listing.listingType}</p>
               </div>
-              <span className={`px-2 py-1 rounded-full ${listing.listingStatus === 'Active' ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'}`}>
+              <span
+                className={`px-2 py-1 rounded-full ${
+                  listing.listingStatus === 'Active' ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'
+                }`}
+              >
                 {listing.listingStatus}
               </span>
             </div>
@@ -59,9 +65,10 @@ const ListingsPage = () => {
                 <p className="text-gray-500">Available From:</p>
                 <p className="text-gray-700">{new Date(listing.availableFrom).toLocaleString()}</p>
               </div>
-              <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+              {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
                 List Unit
-              </button>
+              </button> */}
+                <DeleteEntity entityName="listings" entityId={listing.id} />
             </div>
           </div>
         ))}
