@@ -55,7 +55,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
       };
 
       // Make POST request
-      const response = await axios.post('/api/accountings', requestPayload);
+      const response = await axios.post('http://3.110.171.244:3000/accountings', requestPayload);
       
       // Call parent's add transaction function
       onAddTransaction(response.data);

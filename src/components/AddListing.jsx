@@ -25,8 +25,8 @@ const CreateListingPage = () => {
     const fetchData = async () => {
       try {
         const [propertyResponse, userResponse] = await Promise.all([
-          axios.get('/api/properties'),
-        //   axios.get('/api/users')
+          axios.get('http://3.110.171.244:3000/properties'),
+        //   axios.get('http://3.110.171.244:3000/users')
         ]);
         setProperties(propertyResponse.data);
         // setUsers(userResponse.data);
@@ -53,7 +53,7 @@ const CreateListingPage = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axios.post('/api/listings', formData);
+      await axios.post('http://3.110.171.244:3000/listings', formData);
       navigate('/listings');
     } catch (err) {
       setError(err.message);

@@ -5,7 +5,7 @@ const handleFileUpload = async (e) => {
   try {
     const uploadedUrls = await Promise.all(
       files.map(async (file) => {
-        const { data } = await axios.post("/api/files/presigned-url", {
+        const { data } = await axios.post("http://3.110.171.244:3000/files/presigned-url", {
           key: file.name,
           contentType: file.type,
         });

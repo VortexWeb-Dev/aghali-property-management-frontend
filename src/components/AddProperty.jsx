@@ -48,7 +48,7 @@ const AddProperty = () => {
     try {
       const uploadedUrls = await Promise.all(
         files.map(async (file) => {
-          const { data } = await axios.post("/api/files/presigned-url", {
+          const { data } = await axios.post("http://3.110.171.244:3000/files/presigned-url", {
             key: file.name,
             contentType: file.type,
           });
@@ -81,7 +81,7 @@ const AddProperty = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/properties", formData);
+      await axios.post("http://3.110.171.244:3000/properties", formData);
       navigate("/properties"); // Redirect after successful submission
     } catch (error) {
       console.error("Error creating property:", error);

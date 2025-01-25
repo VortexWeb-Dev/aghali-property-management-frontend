@@ -14,7 +14,7 @@ const Contacts = () => {
     const fetchContacts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get('/api/contacts');
+        const response = await axios.get('http://3.110.171.244:3000/contacts');
         setContacts(response.data);
         setIsLoading(false);
       } catch (err) {
@@ -30,7 +30,7 @@ const Contacts = () => {
   const handleAddContact = async (newContact) => {
     try {
       setIsAddingContact(true);
-      const response = await axios.post('/api/contacts', newContact);
+      const response = await axios.post('http://3.110.171.244:3000/contacts', newContact);
       
       // Update contacts state with the newly added contact
       setContacts(prevContacts => [...prevContacts, response.data]);

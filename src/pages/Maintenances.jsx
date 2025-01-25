@@ -13,7 +13,7 @@ const MaintenancePage = () => {
   useEffect(() => {
     const fetchMaintenanceRequests = async () => {
       try {
-        const response = await axios.get('/api/maintenances');
+        const response = await axios.get('http://3.110.171.244:3000/maintenances');
         setMaintenanceRequests(response.data);
       } catch (err) {
         setError(err.message);

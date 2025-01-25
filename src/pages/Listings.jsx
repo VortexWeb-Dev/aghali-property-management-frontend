@@ -13,7 +13,7 @@ const ListingsPage = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const response = await axios.get('/api/listings');
+        const response = await axios.get('http://3.110.171.244:3000/listings');
         const [listingsArray] = response.data; // Extract the first array from the API response
         const validListings = listingsArray.filter(item => typeof item === 'object' && item !== null); // Filter valid objects
         setListings(validListings);

@@ -12,7 +12,7 @@ const AccountingPage = () => {
   useEffect(() => {
     const fetchAccountings = async () => {
       try {
-        const response = await axios.get('/api/accountings');
+        const response = await axios.get('http://3.110.171.244:3000/accountings');
         setAccountings(response.data);
       } catch (err) {
         setError(err.message);

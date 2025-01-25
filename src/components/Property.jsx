@@ -18,7 +18,7 @@ const Property = ({ id }) => {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        const response = await axios.get(`/api/properties/${id}`);
+        const response = await axios.get(`http://3.110.171.244:3000/properties/${id}`);
         setPropertyData(response.data);
         console.log(response.data);
       } catch (err) {
@@ -43,7 +43,7 @@ const Property = ({ id }) => {
   // Handle update request
   // const handleUpdate = async () => {
   //   try {
-  //     const response = await axios.patch(`/api/properties/${id}`, newPropertyData);
+  //     const response = await axios.patch(`http://3.110.171.244:3000/properties/${id}`, newPropertyData);
   //     if (response.status === 200) {
   //       setPropertyData({
   //         ...propertyData,
@@ -59,7 +59,7 @@ const Property = ({ id }) => {
     try {
       // Make a PATCH request to the backend to update the PropertyData
       const response = await axios.patch(
-        `/api/properties/${updatedPropertyData.id}`,
+        `http://3.110.171.244:3000/properties/${updatedPropertyData.id}`,
         updatedPropertyData
       );
 

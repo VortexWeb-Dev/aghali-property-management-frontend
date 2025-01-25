@@ -55,7 +55,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
       };
 
       // Make POST request
-      const response = await axios.post('/api/maintenances', requestPayload);
+      const response = await axios.post('http://3.110.171.244:3000/maintenances', requestPayload);
       
       // Call parent's add maintenance function
       onAddMaintenance(response.data);

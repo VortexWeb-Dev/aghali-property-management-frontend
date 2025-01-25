@@ -8,7 +8,7 @@ const DeleteEntity = ({entityName, entityId }) => {
     const navigate = useNavigate()
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`/api/${entityName}/${entityId}`);
+      const response = await axios.delete(`http://3.110.171.244:3000/${entityName}/${entityId}`);
       if (response.status === 200) {
         navigate(`/${entityName}`)
         toast.success('Property deleted successfully!');

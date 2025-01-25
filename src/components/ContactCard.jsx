@@ -9,7 +9,7 @@ const ContactCard = ({ props, setContacts }) => {
     try {
       // Make a PUT request to the backend to update the contact
       const response = await axios.patch(
-        `/api/contacts/${updatedContact.id}`,
+        `http://3.110.171.244:3000/contacts/${updatedContact.id}`,
         updatedContact
       );
 
@@ -40,7 +40,7 @@ const ContactCard = ({ props, setContacts }) => {
           <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-28 h-28">
             <div className="w-full h-full rounded-full overflow-hidden border-8 border-white shadow-2xl">
               <img
-                src={props.avatar || "/api/placeholder/96/96"}
+                src={props.avatar || "http://3.110.171.244:3000/placeholder/96/96"}
                 alt={props.name}
                 className="w-full h-full object-cover"
               />

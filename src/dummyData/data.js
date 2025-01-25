@@ -51,7 +51,7 @@ export const contacts = [
       location: "Property Location",
       type: "Property Type",
       amenities: ["1", "2", "3", "4"],
-      imageUrl: "/api/placeholder/400/300"
+      imageUrl: "http://3.110.171.244:3000/placeholder/400/300"
     },
     {
       id: 2,
@@ -59,7 +59,7 @@ export const contacts = [
       location: "Property Location",
       type: "Property Type",
       amenities: ["1", "2", "3", "4"],
-      imageUrl: "/api/placeholder/400/300"
+      imageUrl: "http://3.110.171.244:3000/placeholder/400/300"
     },
     {
       id: 3,
@@ -67,7 +67,7 @@ export const contacts = [
       location: "Property Location",
       type: "Property Type",
       amenities: ["1", "2", "3", "4"],
-      imageUrl: "/api/placeholder/400/300"
+      imageUrl: "http://3.110.171.244:3000/placeholder/400/300"
     },
     {
       id: 4,
@@ -75,7 +75,7 @@ export const contacts = [
       location: "Property Location",
       type: "Property Type",
       amenities: ["1", "2", "3", "4"],
-      imageUrl: "/api/placeholder/400/300"
+      imageUrl: "http://3.110.171.244:3000/placeholder/400/300"
     }
   ];
 
