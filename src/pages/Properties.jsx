@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
-import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
-import PropertyCard from './../components/PropertyCard';
+import React, { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
+import axios from "axios";
+import { Navigate, useNavigate } from "react-router-dom";
+import PropertyCard from "./../components/PropertyCard";
 // import {properties as dummyProperties} from './../dummyData/data'
 
 export const PropertiesPage = () => {
@@ -13,7 +13,7 @@ export const PropertiesPage = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get('http://3.110.171.244:3000/properties');
+        const response = await axios.get("http://3.110.171.244/api/properties");
         setProperties(response.data);
       } catch (err) {
         setError(err.message);
@@ -40,13 +40,12 @@ export const PropertiesPage = () => {
           </div>
         </div>
         <button
-  onClick={() => navigate('/properties/add')}
-  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
->
-  <Plus className="w-5 h-5" />
-  Add Property
-</button>
-
+          onClick={() => navigate("/properties/add")}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+        >
+          <Plus className="w-5 h-5" />
+          Add Property
+        </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {properties.map((property, index) => (

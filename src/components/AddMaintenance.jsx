@@ -1,42 +1,42 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { PlusCircle } from 'lucide-react';
+import React, { useState } from "react";
+import axios from "axios";
+import { PlusCircle } from "lucide-react";
 
 const AddMaintenanceButton = ({ onAddMaintenance }) => {
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newRequest, setNewRequest] = useState({
-    request_type: '',
-    category: '',
-    sub_category: '',
-    issue: '',
-    sub_issue: '',
-    title: '',
-    details: '',
-    property: { id: '' },
-    tenant: { id: '' },
-    available_datetime: ''
+    request_type: "",
+    category: "",
+    sub_category: "",
+    issue: "",
+    sub_issue: "",
+    title: "",
+    details: "",
+    property: { id: "" },
+    tenant: { id: "" },
+    available_datetime: "",
   });
 
   // Handle input changes for new request
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Special handling for nested property and tenant
-    if (name === 'property_id') {
-      setNewRequest(prev => ({
+    if (name === "property_id") {
+      setNewRequest((prev) => ({
         ...prev,
-        property: { id: value }
+        property: { id: value },
       }));
-    } else if (name === 'tenant_id') {
-      setNewRequest(prev => ({
+    } else if (name === "tenant_id") {
+      setNewRequest((prev) => ({
         ...prev,
-        tenant: { id: value }
+        tenant: { id: value },
       }));
     } else {
-      setNewRequest(prev => ({
+      setNewRequest((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
@@ -44,39 +44,44 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
   // Submit new maintenance request
   const handleSubmitRequest = async (e) => {
     e.preventDefault();
-    
+
     try {
       setIsSubmitting(true);
-      
+
       // Transform datetime to ISO string if not already
       const requestPayload = {
         ...newRequest,
-        available_datetime: new Date(newRequest.available_datetime).toISOString()
+        available_datetime: new Date(
+          newRequest.available_datetime
+        ).toISOString(),
       };
 
       // Make POST request
-      const response = await axios.post('http://3.110.171.244:3000/maintenances', requestPayload);
-      
+      const response = await axios.post(
+        "http://3.110.171.244/api/maintenances",
+        requestPayload
+      );
+
       // Call parent's add maintenance function
       onAddMaintenance(response.data);
-      
+
       // Close modal and reset form
       setShowModal(false);
       setNewRequest({
-        request_type: '',
-        category: '',
-        sub_category: '',
-        issue: '',
-        sub_issue: '',
-        title: '',
-        details: '',
-        property: { id: '' },
-        tenant: { id: '' },
-        available_datetime: ''
+        request_type: "",
+        category: "",
+        sub_category: "",
+        issue: "",
+        sub_issue: "",
+        title: "",
+        details: "",
+        property: { id: "" },
+        tenant: { id: "" },
+        available_datetime: "",
       });
     } catch (err) {
       // Optionally handle error (you might want to pass error handling to parent)
-      console.error('Failed to add maintenance request', err);
+      console.error("Failed to add maintenance request", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -84,7 +89,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
 
   return (
     <>
-      <button 
+      <button
         onClick={() => setShowModal(true)}
         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
       >
@@ -234,7 +239,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
                   disabled={isSubmitting}
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Request'}
+                  {isSubmitting ? "Submitting..." : "Submit Request"}
                 </button>
               </div>
             </form>

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { ArrowUp, ArrowDown } from 'lucide-react';
-import AddAccountingButton from './../components/AddAccountingButton';
-import DeleteEntity from '../components/DeleteEntity';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { ArrowUp, ArrowDown } from "lucide-react";
+import AddAccountingButton from "./../components/AddAccountingButton";
+import DeleteEntity from "../components/DeleteEntity";
 
 const AccountingPage = () => {
   const [accountings, setAccountings] = useState([]);
@@ -12,7 +12,9 @@ const AccountingPage = () => {
   useEffect(() => {
     const fetchAccountings = async () => {
       try {
-        const response = await axios.get('http://3.110.171.244:3000/accountings');
+        const response = await axios.get(
+          "http://3.110.171.244/api/accountings"
+        );
         setAccountings(response.data);
       } catch (err) {
         setError(err.message);
@@ -26,12 +28,13 @@ const AccountingPage = () => {
 
   // Handler to add new transaction to state
   const handleAddTransaction = (newTransaction) => {
-    setAccountings(prev => [newTransaction, ...prev]);
+    setAccountings((prev) => [newTransaction, ...prev]);
   };
 
   // Render loading state
   if (loading) return <div className="p-6 text-center">Loading...</div>;
-  if (error) return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
+  if (error)
+    return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
 
   return (
     <div className="p-6">
@@ -66,7 +69,6 @@ const AccountingPage = () => {
               <th className="py-3 px-4 text-left">Invoice Number</th>
               <th className="py-3 px-4 text-left">Notes</th>
               <th className="py-3 px-4 text-left"></th>
-              
             </tr>
           </thead>
           <tbody>
@@ -74,13 +76,22 @@ const AccountingPage = () => {
               <tr key={accounting.id} className="border-b">
                 <td className="py-3 px-4">{accounting.transaction_type}</td>
                 <td className="py-3 px-4">{accounting.amount}</td>
-                <td className="py-3 px-4">{new Date(accounting.transaction_date).toLocaleString()}</td>
-                <td className="py-3 px-4">{new Date(accounting.due_date).toLocaleString()}</td>
+                <td className="py-3 px-4">
+                  {new Date(accounting.transaction_date).toLocaleString()}
+                </td>
+                <td className="py-3 px-4">
+                  {new Date(accounting.due_date).toLocaleString()}
+                </td>
                 <td className="py-3 px-4">{accounting.payment_status}</td>
                 <td className="py-3 px-4">{accounting.payment_method}</td>
                 <td className="py-3 px-4">{accounting.invoice_number}</td>
                 <td className="py-3 px-4">{accounting.notes}</td>
-                <td className="py-3 px-4"><DeleteEntity entityId={accounting.id} entityName="accountings"/></td>
+                <td className="py-3 px-4">
+                  <DeleteEntity
+                    entityId={accounting.id}
+                    entityName="accountings"
+                  />
+                </td>
               </tr>
             ))}
           </tbody>

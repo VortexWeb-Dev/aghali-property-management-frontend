@@ -1,14 +1,17 @@
-import axios from 'axios'
+import axios from "axios";
 
 const handleFileUpload = async (e) => {
   const files = Array.from(e.target.files);
   try {
     const uploadedUrls = await Promise.all(
       files.map(async (file) => {
-        const { data } = await axios.post("http://3.110.171.244:3000/files/presigned-url", {
-          key: file.name,
-          contentType: file.type,
-        });
+        const { data } = await axios.post(
+          "http://3.110.171.244/api/files/presigned-url",
+          {
+            key: file.name,
+            contentType: file.type,
+          }
+        );
 
         // Upload file to S3 using the pre-signed URL
         await axios.put(data.presignedUrl.presignedUrl, file, {

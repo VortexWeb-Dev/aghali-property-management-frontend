@@ -1,81 +1,86 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { PlusCircle } from 'lucide-react';
+import React, { useState } from "react";
+import axios from "axios";
+import { PlusCircle } from "lucide-react";
 
 const AddAccountingButton = ({ onAddTransaction }) => {
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newTransaction, setNewTransaction] = useState({
-    transaction_type: '',
-    amount: '',
-    transaction_date: '',
-    due_date: '',
-    payment_status: '',
-    payment_method: '',
-    invoice_number: '',
-    notes: '',
-    property: { id: '' },
-    tenant: { id: '' }
+    transaction_type: "",
+    amount: "",
+    transaction_date: "",
+    due_date: "",
+    payment_status: "",
+    payment_method: "",
+    invoice_number: "",
+    notes: "",
+    property: { id: "" },
+    tenant: { id: "" },
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Handle nested property and tenant
-    if (name === 'property_id') {
-      setNewTransaction(prev => ({
+    if (name === "property_id") {
+      setNewTransaction((prev) => ({
         ...prev,
-        property: { id: value }
+        property: { id: value },
       }));
-    } else if (name === 'tenant_id') {
-      setNewTransaction(prev => ({
+    } else if (name === "tenant_id") {
+      setNewTransaction((prev) => ({
         ...prev,
-        tenant: { id: value }
+        tenant: { id: value },
       }));
     } else {
-      setNewTransaction(prev => ({
+      setNewTransaction((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
 
   const handleSubmitTransaction = async (e) => {
     e.preventDefault();
-    
+
     try {
       setIsSubmitting(true);
-      
+
       // Transform dates to ISO string
       const requestPayload = {
         ...newTransaction,
-        transaction_date: new Date(newTransaction.transaction_date).toISOString(),
+        transaction_date: new Date(
+          newTransaction.transaction_date
+        ).toISOString(),
         due_date: new Date(newTransaction.due_date).toISOString(),
-        amount: parseFloat(newTransaction.amount)
+        amount: parseFloat(newTransaction.amount),
       };
 
       // Make POST request
-      const response = await axios.post('http://3.110.171.244:3000/accountings', requestPayload);
-      
+      const response = await axios.post(
+        "http://3.110.171.244/api/accountings",
+        requestPayload
+      );
+
       // Call parent's add transaction function
       onAddTransaction(response.data);
-      
+
       // Close modal and reset form
       setShowModal(false);
       setNewTransaction({
-        transaction_type: '',
-        amount: '',
-        transaction_date: '',
-        due_date: '',
-        payment_status: '',
-        payment_method: '',
-        invoice_number: '',
-        notes: '',
-        property: { id: '' },
-        tenant: { id: '' }
+        transaction_type: "",
+        amount: "",
+        transaction_date: "",
+        due_date: "",
+        payment_status: "",
+        payment_method: "",
+        invoice_number: "",
+        notes: "",
+        property: { id: "" },
+        tenant: { id: "" },
       });
     } catch (err) {
-      console.error('Failed to add transaction', err);
+      console.error("Failed to add transaction", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -83,7 +88,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
 
   return (
     <>
-      <button 
+      <button
         onClick={() => setShowModal(true)}
         className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
       >
@@ -109,7 +114,9 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                     <option value="">Select Type</option>
                     <option value="Rent">Rent</option>
                     <option value="Security Deposit">Security Deposit</option>
-                    <option value="Maintenance Charge">Maintenance Charge</option>
+                    <option value="Maintenance Charge">
+                      Maintenance Charge
+                    </option>
                     <option value="Late Fee">Late Fee</option>
                     <option value="Refund">Refund</option>
                   </select>
@@ -252,7 +259,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                   disabled={isSubmitting}
                   className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Add Transaction'}
+                  {isSubmitting ? "Submitting..." : "Add Transaction"}
                 </button>
               </div>
             </form>

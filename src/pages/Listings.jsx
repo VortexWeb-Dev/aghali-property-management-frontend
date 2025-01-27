@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { PlusCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import DeleteEntity from '../components/DeleteEntity';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { PlusCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import DeleteEntity from "../components/DeleteEntity";
 
 const ListingsPage = () => {
   const navigate = useNavigate();
@@ -13,9 +13,11 @@ const ListingsPage = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const response = await axios.get('http://3.110.171.244:3000/listings');
+        const response = await axios.get("http://3.110.171.244/api/listings");
         const [listingsArray] = response.data; // Extract the first array from the API response
-        const validListings = listingsArray.filter(item => typeof item === 'object' && item !== null); // Filter valid objects
+        const validListings = listingsArray.filter(
+          (item) => typeof item === "object" && item !== null
+        ); // Filter valid objects
         setListings(validListings);
       } catch (err) {
         setError(err.message);
@@ -28,7 +30,8 @@ const ListingsPage = () => {
   }, []);
 
   if (loading) return <div className="p-6 text-center">Loading...</div>;
-  if (error) return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
+  if (error)
+    return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
 
   return (
     <div className="p-6 space-y-6">
@@ -36,7 +39,7 @@ const ListingsPage = () => {
         <h1 className="text-2xl font-bold">Listings</h1>
         <button
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          onClick={() => navigate('/listings/add')}
+          onClick={() => navigate("/listings/add")}
         >
           <PlusCircle className="w-5 h-5" />
           Add Listing
@@ -45,7 +48,10 @@ const ListingsPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {listings.map((listing) => (
-          <div key={listing.id} className="bg-white rounded-lg shadow-md p-6 space-y-4">
+          <div
+            key={listing.id}
+            className="bg-white rounded-lg shadow-md p-6 space-y-4"
+          >
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-lg font-medium">{listing.title}</h3>
@@ -53,7 +59,9 @@ const ListingsPage = () => {
               </div>
               <span
                 className={`px-2 py-1 rounded-full ${
-                  listing.listingStatus === 'Active' ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'
+                  listing.listingStatus === "Active"
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-500 text-white"
                 }`}
               >
                 {listing.listingStatus}
@@ -63,12 +71,14 @@ const ListingsPage = () => {
             <div className="flex justify-between items-end">
               <div>
                 <p className="text-gray-500">Available From:</p>
-                <p className="text-gray-700">{new Date(listing.availableFrom).toLocaleString()}</p>
+                <p className="text-gray-700">
+                  {new Date(listing.availableFrom).toLocaleString()}
+                </p>
               </div>
               {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
                 List Unit
               </button> */}
-                <DeleteEntity entityName="listings" entityId={listing.id} />
+              <DeleteEntity entityName="listings" entityId={listing.id} />
             </div>
           </div>
         ))}

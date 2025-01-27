@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import AddContactButton from '../components/AddContactButton';
-import ContactCard from '../components/ContactCard';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import AddContactButton from "../components/AddContactButton";
+import ContactCard from "../components/ContactCard";
 
 const Contacts = () => {
   const [contacts, setContacts] = useState([]);
@@ -14,11 +14,11 @@ const Contacts = () => {
     const fetchContacts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get('http://3.110.171.244:3000/contacts');
+        const response = await axios.get("http://3.110.171.244/api/contacts");
         setContacts(response.data);
         setIsLoading(false);
       } catch (err) {
-        setError('Failed to fetch contacts');
+        setError("Failed to fetch contacts");
         setIsLoading(false);
       }
     };
@@ -30,15 +30,18 @@ const Contacts = () => {
   const handleAddContact = async (newContact) => {
     try {
       setIsAddingContact(true);
-      const response = await axios.post('http://3.110.171.244:3000/contacts', newContact);
-      
+      const response = await axios.post(
+        "http://3.110.171.244/api/contacts",
+        newContact
+      );
+
       // Update contacts state with the newly added contact
-      setContacts(prevContacts => [...prevContacts, response.data]);
-      
+      setContacts((prevContacts) => [...prevContacts, response.data]);
+
       // Reset adding state
       setIsAddingContact(false);
     } catch (err) {
-      setError('Failed to add contact');
+      setError("Failed to add contact");
       setIsAddingContact(false);
     }
   };
@@ -70,18 +73,22 @@ const Contacts = () => {
             Dashboard / <span className="text-blue-600">Contact</span>
           </div>
         </div>
-        <AddContactButton 
-          onAddContact={handleAddContact} 
+        <AddContactButton
+          onAddContact={handleAddContact}
           isLoading={isAddingContact}
         />
       </div>
-      
+
       {contacts.length === 0 ? (
         <div className="text-center text-gray-500">No contacts found</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {contacts.map((contact) => (
-            <ContactCard key={contact.id} props={contact} setContacts={setContacts} />
+            <ContactCard
+              key={contact.id}
+              props={contact}
+              setContacts={setContacts}
+            />
           ))}
         </div>
       )}

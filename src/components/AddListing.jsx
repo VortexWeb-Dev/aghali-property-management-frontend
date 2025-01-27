@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const CreateListingPage = () => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
-//   const [users, setUsers] = useState([]);
+  //   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    listingType: 'Rent',
-    listingStatus: 'Active',
-    availableFrom: '',
-    listingDate: '',
-    expiryDate: '',
+    title: "",
+    description: "",
+    listingType: "Rent",
+    listingStatus: "Active",
+    availableFrom: "",
+    listingDate: "",
+    expiryDate: "",
     property: null,
-    listedBy: null
+    listedBy: null,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,8 +25,8 @@ const CreateListingPage = () => {
     const fetchData = async () => {
       try {
         const [propertyResponse, userResponse] = await Promise.all([
-          axios.get('http://3.110.171.244:3000/properties'),
-        //   axios.get('http://3.110.171.244:3000/users')
+          axios.get("http://3.110.171.244/api/properties"),
+          //   axios.get('http://3.110.171.244/api/users')
         ]);
         setProperties(propertyResponse.data);
         // setUsers(userResponse.data);
@@ -42,19 +42,22 @@ const CreateListingPage = () => {
   };
 
   const handlePropertyChange = (e) => {
-    setFormData({ ...formData, property: properties.find(prop => prop.id === parseInt(e.target.value)) });
+    setFormData({
+      ...formData,
+      property: properties.find((prop) => prop.id === parseInt(e.target.value)),
+    });
   };
 
-//   const handleListedByChange = (e) => {
-//     setFormData({ ...formData, listedBy: users.find(user => user.id === parseInt(e.target.value)) });
-//   };
+  //   const handleListedByChange = (e) => {
+  //     setFormData({ ...formData, listedBy: users.find(user => user.id === parseInt(e.target.value)) });
+  //   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axios.post('http://3.110.171.244:3000/listings', formData);
-      navigate('/listings');
+      await axios.post("http://3.110.171.244/api/listings", formData);
+      navigate("/listings");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -63,18 +66,22 @@ const CreateListingPage = () => {
   };
 
   if (loading) return <div className="p-6 text-center">Loading...</div>;
-  if (error) return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
+  if (error)
+    return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center space-x-2 text-gray-500 hover:text-gray-700 transition-colors">
-        <button onClick={() => navigate('/listings')}>
+        <button onClick={() => navigate("/listings")}>
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <span >Back to Listings</span>
+        <span>Back to Listings</span>
       </div>
       <h1 className="text-2xl font-bold">Create Listing</h1>
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-lg shadow-md p-6 space-y-4"
+      >
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="title" className="block text-gray-700 font-medium">
@@ -91,7 +98,10 @@ const CreateListingPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="listingType" className="block text-gray-700 font-medium">
+            <label
+              htmlFor="listingType"
+              className="block text-gray-700 font-medium"
+            >
               Listing Type
             </label>
             <select
@@ -108,7 +118,10 @@ const CreateListingPage = () => {
           </div>
         </div>
         <div>
-          <label htmlFor="description" className="block text-gray-700 font-medium">
+          <label
+            htmlFor="description"
+            className="block text-gray-700 font-medium"
+          >
             Description
           </label>
           <textarea
@@ -123,7 +136,10 @@ const CreateListingPage = () => {
         </div>
         <div className="grid grid-cols-3 gap-4">
           <div>
-            <label htmlFor="availableFrom" className="block text-gray-700 font-medium">
+            <label
+              htmlFor="availableFrom"
+              className="block text-gray-700 font-medium"
+            >
               Available From
             </label>
             <input
@@ -137,7 +153,10 @@ const CreateListingPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="listingDate" className="block text-gray-700 font-medium">
+            <label
+              htmlFor="listingDate"
+              className="block text-gray-700 font-medium"
+            >
               Listing Date
             </label>
             <input
@@ -151,7 +170,10 @@ const CreateListingPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="expiryDate" className="block text-gray-700 font-medium">
+            <label
+              htmlFor="expiryDate"
+              className="block text-gray-700 font-medium"
+            >
               Expiry Date
             </label>
             <input
@@ -167,13 +189,16 @@ const CreateListingPage = () => {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label htmlFor="property" className="block text-gray-700 font-medium">
+            <label
+              htmlFor="property"
+              className="block text-gray-700 font-medium"
+            >
               Property
             </label>
             <select
               id="property"
               name="property"
-              value={formData.property?.id || ''}
+              value={formData.property?.id || ""}
               onChange={handlePropertyChange}
               className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
               required
@@ -187,7 +212,10 @@ const CreateListingPage = () => {
             </select>
           </div>
           <div>
-            <label htmlFor="listedBy" className="block text-gray-700 font-medium">
+            <label
+              htmlFor="listedBy"
+              className="block text-gray-700 font-medium"
+            >
               Listed By
             </label>
             {/* <select

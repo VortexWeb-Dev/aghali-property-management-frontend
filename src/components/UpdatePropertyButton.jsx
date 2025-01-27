@@ -3,7 +3,7 @@ import axios from "axios";
 
 const UpdatePropertyButton = ({
   onUpdateProperty,
-//   isLoading,
+  //   isLoading,
   existingProperty,
 }) => {
   const [showModal, setShowModal] = useState(false);
@@ -14,10 +14,13 @@ const UpdatePropertyButton = ({
     try {
       const uploadedUrl = await Promise.all(
         files.map(async (file) => {
-          const { data } = await axios.post("http://3.110.171.244:3000/files/presigned-url", {
-            key: file.name,
-            contentType: file.type,
-          });
+          const { data } = await axios.post(
+            "http://3.110.171.244/api/files/presigned-url",
+            {
+              key: file.name,
+              contentType: file.type,
+            }
+          );
 
           // Upload file to S3 using the pre-signed URL
           await axios.put(data.presignedUrl.presignedUrl, file, {
@@ -76,10 +79,8 @@ const UpdatePropertyButton = ({
         Update
       </button>
 
-
-
-            {/* --------------------- */}
-            {showModal && (
+      {/* --------------------- */}
+      {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10 overflow-y-auto">
           <div className="bg-white p-6 rounded-lg w-fit max-h-screen overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">Update Property</h2>
