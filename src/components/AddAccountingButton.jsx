@@ -58,7 +58,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
 
       // Make POST request
       const response = await axios.post(
-        "http://3.110.171.244/api/accountings",
+        "https://vortexwebpropertymanagement.com/api/accountings",
         requestPayload
       );
 

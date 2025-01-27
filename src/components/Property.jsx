@@ -19,7 +19,7 @@ const Property = ({ id }) => {
     const fetchProperty = async () => {
       try {
         const response = await axios.get(
-          `http://3.110.171.244/api/properties/${id}`
+          `https://vortexwebpropertymanagement.com/api/properties/${id}`
         );
         setPropertyData(response.data);
         console.log(response.data);
@@ -45,7 +45,7 @@ const Property = ({ id }) => {
   // Handle update request
   // const handleUpdate = async () => {
   //   try {
-  //     const response = await axios.patch(`http://3.110.171.244/api/properties/${id}`, newPropertyData);
+  //     const response = await axios.patch(`https://vortexwebpropertymanagement.com/api/properties/${id}`, newPropertyData);
   //     if (response.status === 200) {
   //       setPropertyData({
   //         ...propertyData,
@@ -61,7 +61,7 @@ const Property = ({ id }) => {
     try {
       // Make a PATCH request to the backend to update the PropertyData
       const response = await axios.patch(
-        `http://3.110.171.244/api/properties/${updatedPropertyData.id}`,
+        `https://vortexwebpropertymanagement.com/api/properties/${updatedPropertyData.id}`,
         updatedPropertyData
       );
 

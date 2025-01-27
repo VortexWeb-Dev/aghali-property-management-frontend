@@ -25,8 +25,8 @@ const CreateListingPage = () => {
     const fetchData = async () => {
       try {
         const [propertyResponse, userResponse] = await Promise.all([
-          axios.get("http://3.110.171.244/api/properties"),
-          //   axios.get('http://3.110.171.244/api/users')
+          axios.get("https://vortexwebpropertymanagement.com/api/properties"),
+          //   axios.get('https://vortexwebpropertymanagement.com/api/users')
         ]);
         setProperties(propertyResponse.data);
         // setUsers(userResponse.data);
@@ -56,7 +56,10 @@ const CreateListingPage = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await axios.post("http://3.110.171.244/api/listings", formData);
+      await axios.post(
+        "https://vortexwebpropertymanagement.com/api/listings",
+        formData
+      );
       navigate("/listings");
     } catch (err) {
       setError(err.message);

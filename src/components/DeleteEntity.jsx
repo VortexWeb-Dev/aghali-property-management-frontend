@@ -9,7 +9,7 @@ const DeleteEntity = ({ entityName, entityId }) => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `http://3.110.171.244/api/${entityName}/${entityId}`
+        `https://vortexwebpropertymanagement.com/api/${entityName}/${entityId}`
       );
       if (response.status === 200) {
         navigate(`/${entityName}`);

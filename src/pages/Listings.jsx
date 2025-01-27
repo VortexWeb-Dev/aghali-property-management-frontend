@@ -13,7 +13,9 @@ const ListingsPage = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const response = await axios.get("http://3.110.171.244/api/listings");
+        const response = await axios.get(
+          "https://vortexwebpropertymanagement.com/api/listings"
+        );
         const [listingsArray] = response.data; // Extract the first array from the API response
         const validListings = listingsArray.filter(
           (item) => typeof item === "object" && item !== null

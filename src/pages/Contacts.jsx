@@ -14,7 +14,9 @@ const Contacts = () => {
     const fetchContacts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get("http://3.110.171.244/api/contacts");
+        const response = await axios.get(
+          "https://vortexwebpropertymanagement.com/api/contacts"
+        );
         setContacts(response.data);
         setIsLoading(false);
       } catch (err) {
@@ -31,7 +33,7 @@ const Contacts = () => {
     try {
       setIsAddingContact(true);
       const response = await axios.post(
-        "http://3.110.171.244/api/contacts",
+        "https://vortexwebpropertymanagement.com/api/contacts",
         newContact
       );
 

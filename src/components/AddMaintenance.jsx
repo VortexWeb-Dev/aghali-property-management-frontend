@@ -58,7 +58,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
 
       // Make POST request
       const response = await axios.post(
-        "http://3.110.171.244/api/maintenances",
+        "https://vortexwebpropertymanagement.com/api/maintenances",
         requestPayload
       );
 

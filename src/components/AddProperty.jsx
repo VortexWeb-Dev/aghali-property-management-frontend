@@ -49,7 +49,7 @@ const AddProperty = () => {
       const uploadedUrls = await Promise.all(
         files.map(async (file) => {
           const { data } = await axios.post(
-            "http://3.110.171.244/api/files/presigned-url",
+            "https://vortexwebpropertymanagement.com/api/files/presigned-url",
             {
               key: file.name,
               contentType: file.type,
@@ -84,7 +84,10 @@ const AddProperty = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://3.110.171.244/api/properties", formData);
+      await axios.post(
+        "https://vortexwebpropertymanagement.com/api/properties",
+        formData
+      );
       navigate("/properties"); // Redirect after successful submission
     } catch (error) {
       console.error("Error creating property:", error);

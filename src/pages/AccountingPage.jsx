@@ -13,7 +13,7 @@ const AccountingPage = () => {
     const fetchAccountings = async () => {
       try {
         const response = await axios.get(
-          "http://3.110.171.244/api/accountings"
+          "https://vortexwebpropertymanagement.com/api/accountings"
         );
         setAccountings(response.data);
       } catch (err) {

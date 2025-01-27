@@ -9,7 +9,7 @@ const ContactCard = ({ props, setContacts }) => {
     try {
       // Make a PUT request to the backend to update the contact
       const response = await axios.patch(
-        `http://3.110.171.244/api/contacts/${updatedContact.id}`,
+        `https://vortexwebpropertymanagement.com/api/contacts/${updatedContact.id}`,
         updatedContact
       );
 
@@ -41,7 +41,8 @@ const ContactCard = ({ props, setContacts }) => {
             <div className="w-full h-full rounded-full overflow-hidden border-8 border-white shadow-2xl">
               <img
                 src={
-                  props.avatar || "http://3.110.171.244/api/placeholder/96/96"
+                  props.avatar ||
+                  "https://vortexwebpropertymanagement.com/api/placeholder/96/96"
                 }
                 alt={props.name}
                 className="w-full h-full object-cover"

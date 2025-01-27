@@ -6,7 +6,7 @@ const handleFileUpload = async (e) => {
     const uploadedUrls = await Promise.all(
       files.map(async (file) => {
         const { data } = await axios.post(
-          "http://3.110.171.244/api/files/presigned-url",
+          "https://vortexwebpropertymanagement.com/api/files/presigned-url",
           {
             key: file.name,
             contentType: file.type,

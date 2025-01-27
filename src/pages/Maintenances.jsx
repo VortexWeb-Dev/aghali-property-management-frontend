@@ -14,7 +14,7 @@ const MaintenancePage = () => {
     const fetchMaintenanceRequests = async () => {
       try {
         const response = await axios.get(
-          "http://3.110.171.244/api/maintenances"
+          "https://vortexwebpropertymanagement.com/api/maintenances"
         );
         setMaintenanceRequests(response.data);
       } catch (err) {

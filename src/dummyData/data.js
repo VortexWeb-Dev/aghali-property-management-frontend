@@ -60,7 +60,7 @@ export const properties = [
     location: "Property Location",
     type: "Property Type",
     amenities: ["1", "2", "3", "4"],
-    imageUrl: "http://3.110.171.244/api/placeholder/400/300",
+    imageUrl: "https://vortexwebpropertymanagement.com/api/placeholder/400/300",
   },
   {
     id: 2,
@@ -68,7 +68,7 @@ export const properties = [
     location: "Property Location",
     type: "Property Type",
     amenities: ["1", "2", "3", "4"],
-    imageUrl: "http://3.110.171.244/api/placeholder/400/300",
+    imageUrl: "https://vortexwebpropertymanagement.com/api/placeholder/400/300",
   },
   {
     id: 3,
@@ -76,7 +76,7 @@ export const properties = [
     location: "Property Location",
     type: "Property Type",
     amenities: ["1", "2", "3", "4"],
-    imageUrl: "http://3.110.171.244/api/placeholder/400/300",
+    imageUrl: "https://vortexwebpropertymanagement.com/api/placeholder/400/300",
   },
   {
     id: 4,
@@ -84,7 +84,7 @@ export const properties = [
     location: "Property Location",
     type: "Property Type",
     amenities: ["1", "2", "3", "4"],
-    imageUrl: "http://3.110.171.244/api/placeholder/400/300",
+    imageUrl: "https://vortexwebpropertymanagement.com/api/placeholder/400/300",
   },
 ];
 
