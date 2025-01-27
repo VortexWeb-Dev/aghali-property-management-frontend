@@ -10,7 +10,14 @@ const RealEstateForm = ({propertyData}) => {
   return (
     <div className="mx-auto p-6">
 
-    <FormData propertyData={propertyData} gridColValue={2} />
+    <FormData propertyData={
+   Object.entries(propertyData).filter(
+    ([key]) =>
+      !['id', 'feature', 'amenities', 'photos', 'attachments', 'created_at', 'updated_at','beds', 'baths', 'marketRent', 'size', 'deposit', 'parking', 'laundry', 'AC'].includes(
+        key
+      )
+  )
+        } gridColValue={2} />
 
     {/* Property Type */}
     <div>
@@ -25,7 +32,12 @@ const RealEstateForm = ({propertyData}) => {
     Single family rentals (SFR) are rentals in which there is only one rental associated to a specific address. This type of property does not allow to add any units/rooms.
     </p>
     </div>
-    <FormData propertyData={propertyData} gridColValue={3} />
+    <FormData propertyData={   Object.entries(propertyData).filter(
+    ([key]) =>
+      ['beds', 'baths', 'marketRent', 'size', 'deposit', 'parking', 'laundry', 'AC'].includes(
+        key
+      )
+  )} gridColValue={3} />
 
     {
         console.log(propertyData)

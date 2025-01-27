@@ -21,14 +21,9 @@ const FormData = ({ propertyData, gridColValue }) => {
           : ''
       } gap-6`}
     >
-      {Object.entries(propertyData)
-        .filter(
-          ([key]) =>
-            !['id', 'feature', 'amenities', 'photos', 'attachments'].includes(
-              key
-            )
-        )
-        .map(([key, value]) => (
+      {
+      propertyData  
+      .map(([key, value]) => (
           <div key={key}>
             <label>
               {key
@@ -38,11 +33,12 @@ const FormData = ({ propertyData, gridColValue }) => {
             </label>
             <input
               type="text"
-              value={
-                !isNaN(Date.parse(value)) || Date.parse(value) == "" // Check if the value is a valid date
-                  ? formatDate(value)
-                  : value
-              }
+              // value={
+              //   !isNaN(Date.parse(value)) || Date.parse(value) == "" // Check if the value is a valid date
+              //     ? formatDate(value)
+              //     : value
+              // }
+              value={value}
               readOnly
               className={inputClass}
             />

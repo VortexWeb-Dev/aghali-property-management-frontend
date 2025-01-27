@@ -96,7 +96,7 @@ const UpdatePropertyButton = ({
                     name="currency"
                     className="border w-full p-2 rounded"
                     onChange={handleInputChange}
-                    defaultValue="$ US Dollar"
+                    defaultValue="AED"
                   >
                     <option value="$ US Dollar">$ US Dollar</option>
                     <option value="AED"> د.إ AED</option>

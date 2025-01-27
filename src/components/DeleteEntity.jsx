@@ -14,6 +14,7 @@ const DeleteEntity = ({ entityName, entityId }) => {
       if (response.status === 200) {
         navigate(`/${entityName}`);
         toast.success("Property deleted successfully!");
+        window.location.reload();
       }
     } catch (error) {
       toast.error("Error deleting property");

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {X} from 'lucide-react'
 
 const AddProperty = () => {
   const navigate = useNavigate();
@@ -37,6 +38,8 @@ const AddProperty = () => {
     photos: [],
     attachments: [],
   });
+
+  const [files, setFiles] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,7 +82,20 @@ const AddProperty = () => {
     } catch (error) {
       console.error("Error uploading files:", error);
     }
+
+    setFiles(files);
   };
+
+  const removeFile = (indexToRemove) => {
+    setFiles(files.filter((_, index) => index !== indexToRemove));
+    
+    // Reset the input value to allow re-uploading the same file
+    const input = document.getElementById('file-upload');
+    if (input) {
+      input.value = '';
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,11 +124,11 @@ const AddProperty = () => {
               name="currency"
               className="border w-full p-2 rounded"
               onChange={handleChange}
-              defaultValue="$ US Dollar"
+              defaultValue="AED"
             >
-              <option value="$ US Dollar">$ US Dollar</option>
               <option value="AED"> د.إ AED</option>
-              <option value="₹ Indian Rupee">₹ Indian Rupee</option>
+              <option value="$ US Dollar">$ US Dollar</option>
+              {/* <option value="₹ Indian Rupee">₹ Indian Rupee</option> */}
             </select>
           </div>
           <div>
@@ -275,8 +291,8 @@ const AddProperty = () => {
         </div>
 
         <h2 className="text-xl font-bold mb-2">Upload Attachment</h2>
-        <div className="border border-dashed rounded-lg border-gray-700 h-36 flex justify-center items-center">
-          <div className="flex flex-col items-center">
+        <div className="border border-dashed rounded-lg border-gray-700 h-36 flex justify-center items-center ">
+          <div className="flex gap-4 items-center overflow-y-auto">
             {/* Hidden File Input */}
             <input
               id="file-upload"
@@ -295,8 +311,48 @@ const AddProperty = () => {
                 <span className="text-3xl font-bold">+</span>
               </div>
               <span className="mt-2 text-lg font-medium">Upload</span>
-              <span className="font-thin">Store documents and templates</span>
+              <span className="font-thin">Documents and Templates</span>
             </label>
+            
+            {/* {files.length > 0 && (
+        <div className="mt-4 w-full max-w-md">
+          <h3 className="text-lg font-medium mb-2">Uploaded Files:</h3>
+          <ul className="space-y-2">
+            {files.map((file, index) => (
+              <li 
+                key={index}
+                className="flex items-center p-2 bg-gray-50 rounded-lg"
+              >
+                <span className="text-sm text-gray-600">{file.name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )} */}
+
+{files.length > 0 && (
+        <div className="mt-4 w-full max-w-md">
+          <h3 className="text-lg font-medium mb-2">Uploaded Files:</h3>
+          <ul className="space-y-2">
+            {files.map((file, index) => (
+              <li 
+                key={index}
+                className="flex items-center justify-between p-2 bg-gray-50 rounded-lg group"
+              >
+                <span className="text-sm text-gray-600">{file.name}</span>
+                <button
+                  onClick={() => removeFile(index)}
+                  className="p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-gray-200 transition-colors"
+                  aria-label={`Remove ${file.name}`}
+                >
+                  <X size={16} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
           </div>
         </div>
         <button

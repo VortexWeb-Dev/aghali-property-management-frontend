@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { PlusCircle } from "lucide-react";
+import CategorySelector from "./CategorySelector";
+import {electricalSubCategory, exteriorSubCategory, plumbingSubCategory, householdSubCategory, outdoorSubCategory, Issue, SubIssue} from './../enums/enums';
 
 const AddMaintenanceButton = ({ onAddMaintenance }) => {
   const [showModal, setShowModal] = useState(false);
@@ -85,7 +87,29 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  const getSubCategories = (category) => {
+    switch (category) {
+      case 'Electrical':
+        return Object.values(electricalSubCategory);
+      case 'House Exterior':
+        return Object.values(exteriorSubCategory);
+      case 'Household':
+        return Object.values(householdSubCategory);
+      case 'Outdoors':
+        return Object.values(outdoorSubCategory);
+      case 'Plumbing':
+        return Object.values(plumbingSubCategory);
+      case 'Issue':
+        return Object.values(Issue);
+      case 'Sub Issue':
+        return Object.values(SubIssue);
+      default:
+        return [];
+    }
   };
+  ;
 
   return (
     <>
@@ -114,54 +138,142 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
                   >
                     <option value="">Select Type</option>
                     <option value="Basic">Basic</option>
-                    <option value="Urgent">Urgent</option>
+                    <option value="Advanced">Advanced</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block mb-2">Category</label>
-                  <select
-                    name="category"
-                    value={newRequest.category}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full border rounded p-2"
-                  >
-                    <option value="">Select Category</option>
-                    <option value="Electrical">Electrical</option>
-                    <option value="Plumbing">Plumbing</option>
-                    <option value="House Exterior">House Exterior</option>
-                    <option value="Household">Household</option>
-                    <option value="Outdoors">Outdoors</option>
-                    <option value="Appliances">Appliances</option>
-                  </select>
+                <div className="col-span-2">
+          
+                    <CategorySelector
+                      value={newRequest.category}
+                      onChange={handleInputChange}
+                    />
+
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block mb-2">Sub Category</label>
-                  <input
-                    type="text"
-                    name="sub_category"
-                    value={newRequest.sub_category}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full border rounded p-2"
-                    placeholder="E.g., Lights"
-                  />
-                </div>
-                <div>
-                  <label className="block mb-2">Issue</label>
-                  <input
-                    type="text"
-                    name="issue"
-                    value={newRequest.issue}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full border rounded p-2"
-                    placeholder="E.g., Electrical Outage"
-                  />
-                </div>
+              <div>
+  <label className="block mb-2">Sub Category</label>
+  <select
+    name="sub_category"
+    value={newRequest.sub_category}
+    onChange={handleInputChange}
+    required
+    className="w-full border rounded p-2"
+  >
+    <option value="" disabled>Select Sub Category</option>
+    
+      {
+          
+        getSubCategories(newRequest.category).map((subCategory) => (
+          <option key={subCategory} value={subCategory}>
+            {subCategory}
+          </option>
+        ))
+      }
+    
+  </select>
+</div>
+              <div>
+  <label className="block mb-2">Issue</label>
+  <select
+    name="sub_category"
+    value={newRequest.sub_category}
+    onChange={handleInputChange}
+    required
+    className="w-full border rounded p-2"
+  >
+    <option value="" disabled>Select Issue</option>
+    
+      {
+          
+        getSubCategories("Issue").map((subCategory) => (
+          <option key={subCategory} value={subCategory}>
+            {subCategory}
+          </option>
+        ))
+      }
+    
+  </select>
+</div>
+              <div>
+  <label className="block mb-2">Sub Issue</label>
+  <select
+    name="sub_category"
+    value={newRequest.sub_category}
+    onChange={handleInputChange}
+    required
+    className="w-full border rounded p-2"
+  >
+    <option value="" disabled>Select Sub Issue</option>
+    
+      {
+          
+        getSubCategories("Sub Issue").map((subCategory) => (
+          <option key={subCategory} value={subCategory}>
+            {subCategory}
+          </option>
+        ))
+      }
+    
+  </select>
+</div>
+
+<br />
+
+              <div>
+  <label className="block mb-2">Status</label>
+  <select
+    name="status"
+    value={newRequest.status}
+    onChange={handleInputChange}
+    required
+    className="w-full border rounded p-2"
+  >
+    {/* <option value="" disabled>Select Status</option> */}
+    
+     
+          <option key="Normal" value="Normal">
+            Normal
+          </option>
+          <option key="Moderate" value="Moderate">
+            Moderate
+          </option>
+          <option key="Critical" value="Critical">
+            Critical
+          </option>
+        
+      
+    
+  </select>
+</div>
+              <div>
+  <label className="block mb-2">Stage</label>
+  <select
+    name="stage"
+    value={newRequest.stage}
+    onChange={handleInputChange}
+    required
+    className="w-full border rounded p-2"
+  >
+    {/* <option value="" disabled>Select Stage</option> */}
+    
+ 
+          <option key="New" value="New">
+          New
+          </option>
+          <option key="Updated" value="Updated">
+          Updated
+          </option>
+          <option key="Pending" value="Pending">
+          Pending
+          </option>
+        
+    
+  </select>
+</div>
+
+
               </div>
 
               <div>
