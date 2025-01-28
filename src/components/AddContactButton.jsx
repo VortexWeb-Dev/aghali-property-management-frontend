@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { PlusCircle } from "lucide-react";
 
 const AddContactButton = ({ onAddContact, isLoading }) => {
   const [showModal, setShowModal] = useState(false);
@@ -69,8 +70,9 @@ const AddContactButton = ({ onAddContact, isLoading }) => {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
       >
+        <PlusCircle className="w-5 h-5" />
         Add Contact
       </button>
 
@@ -131,8 +133,9 @@ const AddContactButton = ({ onAddContact, isLoading }) => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
                 >
+                  <PlusCircle className="w-5 h-5" />
                   {isLoading ? "Adding..." : "Add Contact"}
                 </button>
               </div>

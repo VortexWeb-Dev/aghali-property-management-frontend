@@ -58,6 +58,7 @@ export const Issue = {
     WINDOW_DAMAGE : 'Window Damage',
     LANDSCAPING_ISSUE : 'Landscaping Issue',
     PLUMBING_LEAK : 'Plumbing Leak',
+    OTHER: 'Other'
   }
   
   export const SubIssue = {
@@ -67,4 +68,5 @@ export const Issue = {
     BROKEN_DOOR : 'Broken Door',
     POOL_MAINTENANCE : 'Pool Maintenance',
     CLOGGED_DRAIN : 'Clogged Drain',
+    OTHER: 'Other'
   }

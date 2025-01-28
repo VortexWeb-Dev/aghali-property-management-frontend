@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { PlusCircle } from "lucide-react";
+import {toast} from 'react-hot-toast'
 
 const AddAccountingButton = ({ onAddTransaction }) => {
   const [showModal, setShowModal] = useState(false);
@@ -86,15 +87,59 @@ const AddAccountingButton = ({ onAddTransaction }) => {
     }
   };
 
+  const [tenants, setTenants] = useState([])
+  useEffect(() => {
+    const fetchTenants = async () => {
+      try {
+        const response = await axios.get(
+          "https://vortexwebpropertymanagement.com/api/contacts"
+        )
+        const simplifiedTenants = response.data.map(tenant => ({
+          id: tenant.id,
+          name: tenant.name
+        }));
+        setTenants(simplifiedTenants);
+      } catch (err) {
+        console.log("Error while fetching tenants: ", err);
+        toast.error("Error fetching tenants: ",err)
+      }
+    };
+
+    fetchTenants();
+  }, []);
+
+  // properties id/name fetch
+  const [properties, setProperties] = useState([])
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get(
+          "https://vortexwebpropertymanagement.com/api/properties"
+        );
+        setProperties(response.data);
+      } catch (err) {
+        console.log("Error while fetching property: ", err);
+        toast.error("Error fetching tenants: ",err)
+      } 
+    };
+
+    fetchProperties();
+  }, []);
+
   return (
     <>
+    <div className="flow-root">
+      <div className="flex float-right">
       <button
         onClick={() => setShowModal(true)}
-        className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-      >
+        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors float-right"
+        >
         <PlusCircle className="w-5 h-5" />
         Add Transaction
       </button>
+          </div>
+        </div>
 
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -208,7 +253,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                     placeholder="Enter invoice number"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <label className="block mb-2">Property ID</label>
                   <input
                     type="number"
@@ -232,6 +277,44 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                     required
                     className="w-full border rounded p-2"
                   />
+                </div> */}
+                                <div>
+                  <label className="block mb-2">Property ID</label>
+
+                  <select 
+                    name="property_id"
+                    value={newTransaction.property.id}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border rounded p-2"
+                  >
+                    {/* <option value="">Select a tenant</option> */}
+                    {properties.map(property => (
+                      <option key={property.id} value={property.id}>
+                        {property.id} - {property.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+
+                <div>
+                  <label className="block mb-2">Tenant ID</label>
+
+                  <select 
+                    name="tenant"
+                    value={newTransaction.tenant.id}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border rounded p-2"
+                  >
+                    {/* <option value="">Select a tenant</option> */}
+                    {tenants.map(tenant => (
+                      <option key={tenant.id} value={tenant.id}>
+                        {tenant.id} - {tenant.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -257,7 +340,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
                 >
                   {isSubmitting ? "Submitting..." : "Add Transaction"}
                 </button>

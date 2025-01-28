@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Plus, PlusCircle } from "lucide-react";
 import axios from "axios";
 import { Navigate, useNavigate } from "react-router-dom";
 import PropertyCard from "./../components/PropertyCard";
@@ -45,7 +45,7 @@ export const PropertiesPage = () => {
           onClick={() => navigate("/properties/add")}
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
-          <Plus className="w-5 h-5" />
+          <PlusCircle className="w-5 h-5" />
           Add Property
         </button>
       </div>
