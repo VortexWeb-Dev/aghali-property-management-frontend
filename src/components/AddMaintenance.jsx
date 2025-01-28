@@ -149,7 +149,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
         setProperties(response.data);
       } catch (err) {
         console.log("Error while fetching property: ", err);
-        toast.error("Error fetching tenants: ",err)
+        toast.error("Error fetching properties: ",err)
       } 
     };
 

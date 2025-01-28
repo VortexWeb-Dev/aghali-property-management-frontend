@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const CreateListingPage = () => {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
-  //   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -37,6 +37,27 @@ const CreateListingPage = () => {
     fetchData();
   }, []);
 
+  const [tenants, setTenants] = useState([]);
+  useEffect(() => {
+    const fetchTenants = async () => {
+      try {
+        const response = await axios.get(
+          "https://vortexwebpropertymanagement.com/api/contacts"
+        );
+        const simplifiedTenants = response.data.map((tenant) => ({
+          id: tenant.id,
+          name: tenant.name,
+        }));
+        setTenants(simplifiedTenants);
+      } catch (err) {
+        console.log("Error while fetching tenants: ", err);
+        toast.error("Error fetching tenants: ", err);
+      }
+    };
+
+    fetchTenants();
+  }, []);
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -48,9 +69,6 @@ const CreateListingPage = () => {
     });
   };
 
-  //   const handleListedByChange = (e) => {
-  //     setFormData({ ...formData, listedBy: users.find(user => user.id === parseInt(e.target.value)) });
-  //   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,6 +135,7 @@ const CreateListingPage = () => {
             >
               <option value="Rent">Rent</option>
               <option value="Sale">Sale</option>
+              <option value="Lease">Lease</option>
             </select>
           </div>
         </div>
@@ -191,51 +210,60 @@ const CreateListingPage = () => {
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="property"
-              className="block text-gray-700 font-medium"
-            >
-              Property
-            </label>
-            <select
-              id="property"
-              name="property"
-              value={formData.property?.id || ""}
-              onChange={handlePropertyChange}
-              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
-              required
-            >
-              <option value="">Select a property</option>
-              {properties.map((prop) => (
-                <option key={prop.id} value={prop.id}>
-                  {prop.address}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label
-              htmlFor="listedBy"
-              className="block text-gray-700 font-medium"
-            >
-              Listed By
-            </label>
-            {/* <select
-              id="listedBy"
-              name="listedBy"
-              value={formData.listedBy?.id || ''}
-              onChange={handleListedByChange}
-              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
-              required
-            >
-              <option value="">Select a user</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select> */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="property"
+                className="block text-gray-700 font-medium"
+              >
+                Property
+              </label>
+              <select
+                id="property"
+                name="property"
+                value={formData.property?.id || ""}
+                onChange={handlePropertyChange}
+                className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+                required
+              >
+                <option value="">Select a property</option>
+                {properties.map((property) => (
+                  <option key={property.id} value={property.id}>
+                    {property.id} - {property.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label
+                htmlFor="listedBy"
+                className="block text-gray-700 font-medium"
+              >
+                Listed By
+              </label>
+              <select
+                id="listedBy"
+                name="listedBy"
+                value={formData.listedBy?.id || ""}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    listedBy: tenants.find(
+                      (tenant) => tenant.id === parseInt(e.target.value)
+                    ),
+                  });
+                }}
+                className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+                required
+              >
+                <option value="">Select a person</option>
+                {tenants.map((tenant) => (
+                  <option key={tenant.id} value={tenant.id}>
+                    {tenant.id} - {tenant.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
         <div className="flex justify-end">
