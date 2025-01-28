@@ -176,7 +176,7 @@ const MaintenanceDashboard = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <div className="m-5 flow-root">
+      <div className="m-2 flow-root">
         <h1 className="text-3xl text-gray-600 font-bold float-left">View Maintenance</h1>
         <div className=" flex float-right">
            <AddMaintenanceButton onAddMaintenance={handleAddMaintenance}/>
