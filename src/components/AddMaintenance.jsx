@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { PlusCircle } from "lucide-react";
 import CategorySelector from "./CategorySelector";
-import {electricalSubCategory, exteriorSubCategory, plumbingSubCategory, householdSubCategory, outdoorSubCategory, Issue, SubIssue} from './../enums/enums';
+import {electricalSubCategory, exteriorSubCategory, plumbingSubCategory, householdSubCategory, outdoorSubCategory, Issue, SubIssue, applianceSubCategory} from './../enums/enums';
+import {toast} from 'react-hot-toast'
+
 
 const AddMaintenanceButton = ({ onAddMaintenance }) => {
   const [showModal, setShowModal] = useState(false);
@@ -91,6 +93,8 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
 
   const getSubCategories = (category) => {
     switch (category) {
+      case 'Appliances':
+        return Object.values(applianceSubCategory)
       case 'Electrical':
         return Object.values(electricalSubCategory);
       case 'House Exterior':
@@ -108,8 +112,49 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
       default:
         return [];
     }
-  };
-  ;
+  }
+
+  const [tenants, setTenants] = useState([])
+  useEffect(() => {
+    const fetchTenants = async () => {
+      try {
+        const response = await axios.get(
+          "https://vortexwebpropertymanagement.com/api/contacts"
+        )
+        const simplifiedTenants = response.data.map(tenant => ({
+          id: tenant.id,
+          name: tenant.name
+        }));
+        setTenants(simplifiedTenants);
+      } catch (err) {
+        console.log("Error while fetching tenants: ", err);
+        toast.error("Error fetching tenants: ",err)
+      }
+    };
+
+    fetchTenants();
+  }, []);
+
+  // properties id/name fetch
+  const [properties, setProperties] = useState([])
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get(
+          "https://vortexwebpropertymanagement.com/api/properties"
+        );
+        setProperties(response.data);
+      } catch (err) {
+        console.log("Error while fetching property: ", err);
+        toast.error("Error fetching tenants: ",err)
+      } 
+    };
+
+    fetchProperties();
+  }, []);
+
+
 
   return (
     <>
@@ -177,8 +222,8 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
               <div>
   <label className="block mb-2">Issue</label>
   <select
-    name="sub_category"
-    value={newRequest.sub_category}
+    name="issue"
+    value={newRequest.issue}
     onChange={handleInputChange}
     required
     className="w-full border rounded p-2"
@@ -199,8 +244,8 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
               <div>
   <label className="block mb-2">Sub Issue</label>
   <select
-    name="sub_category"
-    value={newRequest.sub_category}
+    name="sub_issue"
+    value={newRequest.sub_issue}
     onChange={handleInputChange}
     required
     className="w-full border rounded p-2"
@@ -302,7 +347,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                {/* <div>
                   <label className="block mb-2">Property ID</label>
                   <input
                     type="number"
@@ -312,17 +357,44 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
                     required
                     className="w-full border rounded p-2"
                   />
+                </div> */}
+                <div>
+                  <label className="block mb-2">Property ID</label>
+
+                  <select 
+                    name="property_id"
+                    value={newRequest.property.id}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border rounded p-2"
+                  >
+                    {/* <option value="">Select a tenant</option> */}
+                    {properties.map(property => (
+                      <option key={property.id} value={property.id}>
+                        {property.id} - {property.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
+
                 <div>
                   <label className="block mb-2">Tenant ID</label>
-                  <input
-                    type="number"
-                    name="tenant_id"
+
+                  <select 
+                    name="tenant"
                     value={newRequest.tenant.id}
                     onChange={handleInputChange}
                     required
                     className="w-full border rounded p-2"
-                  />
+                  >
+                    {/* <option value="">Select a tenant</option> */}
+                    {tenants.map(tenant => (
+                      <option key={tenant.id} value={tenant.id}>
+                        {tenant.id} - {tenant.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

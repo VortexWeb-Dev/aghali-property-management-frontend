@@ -33,30 +33,7 @@ const Property = ({ id }) => {
     if (id) fetchProperty();
   }, [id]);
 
-  // Handle input changes for the update form
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setNewPropertyData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value
-  //   }));
-  // };
-
-  // Handle update request
-  // const handleUpdate = async () => {
-  //   try {
-  //     const response = await axios.patch(`https://vortexwebpropertymanagement.com/api/properties/${id}`, newPropertyData);
-  //     if (response.status === 200) {
-  //       setPropertyData({
-  //         ...propertyData,
-  //         ...newPropertyData, // Update the property data with new values
-  //       });
-  //       toast.success("Property updated successfully!");
-  //     }
-  //   } catch (error) {
-  //     toast.success("Error updating property");
-  //   }
-  // };
+  
   const onUpdatePropertyData = async (updatedPropertyData) => {
     try {
       // Make a PATCH request to the backend to update the PropertyData
@@ -67,15 +44,6 @@ const Property = ({ id }) => {
 
       if (response.status === 200) {
         console.log("PropertyData updated successfully:", response.data);
-
-        // Update the PropertyData in your state (if applicable)
-        // setPropertyData((prevPropertyData) =>
-        //   prevPropertyData.map((PropertyData) =>
-        //     PropertyData.id === updatedPropertyData.id
-        //       ? { ...PropertyData, ...updatedPropertyData }
-        //       : PropertyData
-        //   )
-        // );
 
         setPropertyData({
           ...propertyData,
