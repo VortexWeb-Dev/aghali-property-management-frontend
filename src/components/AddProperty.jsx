@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {X} from 'lucide-react'
+import { X, Upload, PlusCircle } from "lucide-react";
 
 const AddProperty = () => {
   const navigate = useNavigate();
@@ -40,6 +40,37 @@ const AddProperty = () => {
   });
 
   const [files, setFiles] = useState([]);
+  const [preview, setPreview] = useState(null);
+  const [showFeatureInput, setShowFeatureInput] = useState(false);
+  const [showAmenityInput, setShowAmenityInput] = useState(false);
+  const [newFeature, setNewFeature] = useState('');
+  const [newAmenity, setNewAmenity] = useState('');
+
+  const handleAdd = (type) => {
+    if (type === 'feature' && newFeature.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        feature: [...prev.feature, newFeature.trim()]
+      }));
+      setNewFeature('');
+      setShowFeatureInput(false);
+    } else if (type === 'amenity' && newAmenity.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        amenities: [...prev.amenities, newAmenity.trim()]
+      }));
+      setNewAmenity('');
+      setShowAmenityInput(false);
+    }
+  };
+
+  const removeItem = (type, index) => {
+    setFormData(prev => ({
+      ...prev,
+      [type]: prev[type].filter((_, i) => i !== index)
+    }));
+  };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,6 +110,11 @@ const AddProperty = () => {
         ...(imageFiles.length > 0 && { photos: uploadedUrls }),
         ...(nonImageFiles.length > 0 && { attachments: uploadedUrls }),
       }));
+
+      const fileUrl = URL.createObjectURL(imageFiles[0]);
+      console.log(fileUrl);
+      
+      setPreview(fileUrl);
     } catch (error) {
       console.error("Error uploading files:", error);
     }
@@ -88,14 +124,13 @@ const AddProperty = () => {
 
   const removeFile = (indexToRemove) => {
     setFiles(files.filter((_, index) => index !== indexToRemove));
-    
+
     // Reset the input value to allow re-uploading the same file
-    const input = document.getElementById('file-upload');
+    const input = document.getElementById("file-upload");
     if (input) {
-      input.value = '';
+      input.value = "";
     }
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -115,6 +150,8 @@ const AddProperty = () => {
       <h1 className="text-2xl font-bold mb-4">Add Property</h1>
       <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
         {/* Currency Selection */}
+
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
@@ -125,25 +162,52 @@ const AddProperty = () => {
               className="border w-full p-2 rounded"
               onChange={handleChange}
               defaultValue="AED"
-            >
+              >
               <option value="AED"> د.إ AED</option>
               <option value="$ US Dollar">$ US Dollar</option>
               {/* <option value="₹ Indian Rupee">₹ Indian Rupee</option> */}
             </select>
           </div>
+        <div className="flex items-center justify-center">
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Property Photo
-            </label>
+            <label className="group relative inline-flex items-center justify-center gap-2 px-3 py-2 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg cursor-pointer transition-colors duration-200 overflow-hidden">
+              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            <Upload className="w-5 h-5 animate-bounce group-hover:animate-none" />
+            <span>Upload Property Photo</span>
             <input
               type="file"
               name="photos"
-              multiple
-              className="block w-full border p-2 rounded"
+              className="w-full border rounded hidden"
               onChange={handleFileUpload}
-            />
+              accept="image/*"
+              />
+              </label>
+
+            {/* <label className="group relative inline-flex items-center justify-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg cursor-pointer transition-colors duration-200 overflow-hidden">
+              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              <Upload className="w-5 h-5 animate-bounce group-hover:animate-none" />
+              <span>Upload Image</span>
+              <input type="file" accept="image/*" className="hidden" />
+              </label> */}
           </div>
+        {preview && (
+          <div className="relative px-10">
+          <img 
+            src={preview} 
+            alt="Preview" 
+            className="w-36 h-36 object-cover rounded-2xl border-2 border-violet-200 shadow-2xl"
+            />
+          {/* <button
+            onClick={handleRemove}
+            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+            >
+            <X className="w-4 h-4" />
+            </button> */}
         </div>
+      )}
+      </div>
+      </div>
+    
 
         {/* General Information */}
         <div>
@@ -258,7 +322,103 @@ const AddProperty = () => {
         </div>
 
         {/* Features and Amenities */}
-        <div>
+
+{/* Features */}
+        <div className="space-y-6">
+      <div>
+        <h2 className="text-xl font-bold mb-2">Features</h2>
+        <div className="space-y-2 flex items-center">
+          {formData.feature.map((item, index) => (
+            <div key={index} className="flex items-center px-1 py-2 gap-2">
+              <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-md flex items-center gap-2">
+                {item}
+                <button
+                  onClick={() => removeItem('feature', index)}
+                  className="hover:text-blue-600"
+                >
+                  <X size={16} />
+                </button>
+              </span>
+            </div>
+          ))}
+          
+        </div>
+          {showFeatureInput ? (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newFeature}
+                onChange={(e) => setNewFeature(e.target.value)}
+                className="flex-1 border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter feature"
+                onKeyPress={(e) => e.key === 'Enter' && handleAdd('feature')}
+              />
+              <button
+                onClick={() => handleAdd('feature')}
+                className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowFeatureInput(true)}
+              className="flex items-center gap-2 px-4 py-2 text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 transition-colors"
+            >
+              <PlusCircle size={16} />
+              Add Feature
+            </button>
+          )}
+      </div>
+
+{/* Amenities */}
+      <div>
+        <h2 className="text-xl font-bold mb-2">Amenities</h2>
+        <div className="space-y-2 flex">
+          {formData.amenities.map((item, index) => (
+            <div key={index} className="flex px-1 py-2 items-center gap-2">
+              <span className="px-3 py-1 bg-green-100 text-green-800 rounded-md flex items-center gap-2">
+                {item}
+                <button
+                  onClick={() => removeItem('amenities', index)}
+                  className="hover:text-green-600"
+                >
+                  <X size={16} />
+                </button>
+              </span>
+            </div>
+          ))}
+          
+        </div>
+          {showAmenityInput ? (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newAmenity}
+                onChange={(e) => setNewAmenity(e.target.value)}
+                className="flex-1 border rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-green-500"
+                placeholder="Enter amenity"
+                onKeyPress={(e) => e.key === 'Enter' && handleAdd('amenity')}
+              />
+              <button
+                onClick={() => handleAdd('amenity')}
+                className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                Add
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAmenityInput(true)}
+              className="flex items-center gap-2 px-4 py-2 text-green-600 border border-green-600 rounded-md hover:bg-green-50 transition-colors"
+            >
+              <PlusCircle size={16} />
+              Add Amenity
+            </button>
+          )}
+      </div>
+    </div>
+        {/* <div>
           <h2 className="text-xl font-bold mb-2">Features</h2>
           <textarea
             name="feature"
@@ -288,7 +448,7 @@ const AddProperty = () => {
               }))
             }
           />
-        </div>
+        </div> */}
 
         <h2 className="text-xl font-bold mb-2">Upload Attachment</h2>
         <div className="border border-dashed rounded-lg border-gray-700 h-36 flex justify-center items-center ">
@@ -313,46 +473,30 @@ const AddProperty = () => {
               <span className="mt-2 text-lg font-medium">Upload</span>
               <span className="font-thin">Documents and Templates</span>
             </label>
-            
-            {/* {files.length > 0 && (
-        <div className="mt-4 w-full max-w-md">
-          <h3 className="text-lg font-medium mb-2">Uploaded Files:</h3>
-          <ul className="space-y-2">
-            {files.map((file, index) => (
-              <li 
-                key={index}
-                className="flex items-center p-2 bg-gray-50 rounded-lg"
-              >
-                <span className="text-sm text-gray-600">{file.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )} */}
 
-{files.length > 0 && (
-        <div className="mt-4 w-full max-w-md">
-          <h3 className="text-lg font-medium mb-2">Uploaded Files:</h3>
-          <ul className="space-y-2">
-            {files.map((file, index) => (
-              <li 
-                key={index}
-                className="flex items-center justify-between p-2 bg-gray-50 rounded-lg group"
-              >
-                <span className="text-sm text-gray-600">{file.name}</span>
-                <button
-                  onClick={() => removeFile(index)}
-                  className="p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-gray-200 transition-colors"
-                  aria-label={`Remove ${file.name}`}
-                >
-                  <X size={16} />
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
 
+            {files.length > 0 && (
+              <div className="mt-4 w-full max-w-md">
+                <h3 className="text-lg font-medium mb-2">Uploaded Files:</h3>
+                <ul className="space-y-2">
+                  {files.map((file, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded-lg group"
+                    >
+                      <span className="text-sm text-gray-600">{file.name}</span>
+                      <button
+                        onClick={() => removeFile(index)}
+                        className="p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-gray-200 transition-colors"
+                        aria-label={`Remove ${file.name}`}
+                      >
+                        <X size={16} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
         <button
