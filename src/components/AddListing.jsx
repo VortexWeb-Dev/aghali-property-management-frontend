@@ -23,7 +23,9 @@ const CreateListingPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
+      try { 
+
+
         const [propertyResponse, userResponse] = await Promise.all([
           axios.get("https://vortexwebpropertymanagement.com/api/properties"),
           //   axios.get('https://vortexwebpropertymanagement.com/api/users')

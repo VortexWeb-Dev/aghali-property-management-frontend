@@ -2,9 +2,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { PlusCircle } from "lucide-react";
 import CategorySelector from "./CategorySelector";
-import {electricalSubCategory, exteriorSubCategory, plumbingSubCategory, householdSubCategory, outdoorSubCategory, Issue, SubIssue, applianceSubCategory} from './../enums/enums';
-import {toast} from 'react-hot-toast'
-
+import {
+  electricalSubCategory,
+  exteriorSubCategory,
+  plumbingSubCategory,
+  householdSubCategory,
+  outdoorSubCategory,
+  Issue,
+  SubIssue,
+  applianceSubCategory,
+} from "./../enums/enums";
+import { toast } from "react-hot-toast";
 
 const AddMaintenanceButton = ({ onAddMaintenance }) => {
   const [showModal, setShowModal] = useState(false);
@@ -26,16 +34,15 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Special handling for nested property and tenant
     if (name === "property_id") {
       setNewRequest((prev) => ({
         ...prev,
-        property: { id: value },
+        property: { id: Number(value) },
       }));
     } else if (name === "tenant_id") {
       setNewRequest((prev) => ({
         ...prev,
-        tenant: { id: value },
+        tenant: { id: Number(value) },
       }));
     } else {
       setNewRequest((prev) => ({
@@ -89,56 +96,54 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   const getSubCategories = (category) => {
     switch (category) {
-      case 'Appliances':
-        return Object.values(applianceSubCategory)
-      case 'Electrical':
+      case "Appliances":
+        return Object.values(applianceSubCategory);
+      case "Electrical":
         return Object.values(electricalSubCategory);
-      case 'House Exterior':
+      case "House Exterior":
         return Object.values(exteriorSubCategory);
-      case 'Household':
+      case "Household":
         return Object.values(householdSubCategory);
-      case 'Outdoors':
+      case "Outdoors":
         return Object.values(outdoorSubCategory);
-      case 'Plumbing':
+      case "Plumbing":
         return Object.values(plumbingSubCategory);
-      case 'Issue':
+      case "Issue":
         return Object.values(Issue);
-      case 'Sub Issue':
+      case "Sub Issue":
         return Object.values(SubIssue);
       default:
         return [];
     }
-  }
+  };
 
-  const [tenants, setTenants] = useState([])
+  const [tenants, setTenants] = useState([]);
   useEffect(() => {
     const fetchTenants = async () => {
       try {
         const response = await axios.get(
           "https://vortexwebpropertymanagement.com/api/contacts"
-        )
-        const simplifiedTenants = response.data.map(tenant => ({
+        );
+        const simplifiedTenants = response.data.map((tenant) => ({
           id: tenant.id,
-          name: tenant.name
+          name: tenant.name,
         }));
         setTenants(simplifiedTenants);
       } catch (err) {
         console.log("Error while fetching tenants: ", err);
-        toast.error("Error fetching tenants: ",err)
+        toast.error("Error fetching tenants: ", err);
       }
     };
 
     fetchTenants();
   }, []);
 
-  
-
   // properties id/name fetch
-  const [properties, setProperties] = useState([])
+  const [properties, setProperties] = useState([]);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -149,14 +154,12 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
         setProperties(response.data);
       } catch (err) {
         console.log("Error while fetching property: ", err);
-        toast.error("Error fetching properties: ",err)
-      } 
+        toast.error("Error fetching properties: ", err);
+      }
     };
 
     fetchProperties();
   }, []);
-
-
 
   return (
     <>
@@ -176,6 +179,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-2">Request Type</label>
+
                   <select
                     name="request_type"
                     value={newRequest.request_type}
@@ -189,138 +193,123 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
                   </select>
                 </div>
                 <div className="col-span-2">
-          
-                    <CategorySelector
-                      value={newRequest.category}
-                      onChange={handleInputChange}
-                    />
-
+                  <CategorySelector
+                    value={newRequest.category}
+                    onChange={handleInputChange}
+                  />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-              <div>
-  <label className="block mb-2">Sub Category</label>
-  <select
-    name="sub_category"
-    value={newRequest.sub_category}
-    onChange={handleInputChange}
-    required
-    className="w-full border rounded p-2"
-  >
-    <option value="" disabled>Select Sub Category</option>
-    
-      {
-          
-        getSubCategories(newRequest.category).map((subCategory) => (
-          <option key={subCategory} value={subCategory}>
-            {subCategory}
-          </option>
-        ))
-      }
-    
-  </select>
-</div>
-              <div>
-  <label className="block mb-2">Issue</label>
-  <select
-    name="issue"
-    value={newRequest.issue}
-    onChange={handleInputChange}
-    required
-    className="w-full border rounded p-2"
-  >
-    <option value="" disabled>Select Issue</option>
-    
-      {
-          
-        getSubCategories("Issue").map((subCategory) => (
-          <option key={subCategory} value={subCategory}>
-            {subCategory}
-          </option>
-        ))
-      }
-    
-  </select>
-</div>
-              <div>
-  <label className="block mb-2">Sub Issue</label>
-  <select
-    name="sub_issue"
-    value={newRequest.sub_issue}
-    onChange={handleInputChange}
-    required
-    className="w-full border rounded p-2"
-  >
-    <option value="" disabled>Select Sub Issue</option>
-    
-      {
-          
-        getSubCategories("Sub Issue").map((subCategory) => (
-          <option key={subCategory} value={subCategory}>
-            {subCategory}
-          </option>
-        ))
-      }
-    
-  </select>
-</div>
+                <div>
+                  <label className="block mb-2">Sub Category</label>
+                  <select
+                    name="sub_category"
+                    value={newRequest.sub_category}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border rounded p-2"
+                  >
+                    <option value="" disabled>
+                      Select Sub Category
+                    </option>
 
-<br />
+                    {getSubCategories(newRequest.category).map(
+                      (subCategory) => (
+                        <option key={subCategory} value={subCategory}>
+                          {subCategory}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+                <div>
+                  <label className="block mb-2">Issue</label>
+                  <select
+                    name="issue"
+                    value={newRequest.issue}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border rounded p-2"
+                  >
+                    <option value="" disabled>
+                      Select Issue
+                    </option>
 
-              <div>
-  <label className="block mb-2">Status</label>
-  <select
-    name="status"
-    value={newRequest.status}
-    onChange={handleInputChange}
-    required
-    className="w-full border rounded p-2"
-  >
-    {/* <option value="" disabled>Select Status</option> */}
-    
-     
-          <option key="Normal" value="Normal">
-            Normal
-          </option>
-          <option key="Moderate" value="Moderate">
-            Moderate
-          </option>
-          <option key="Critical" value="Critical">
-            Critical
-          </option>
-        
-      
-    
-  </select>
-</div>
-              <div>
-  <label className="block mb-2">Stage</label>
-  <select
-    name="stage"
-    value={newRequest.stage}
-    onChange={handleInputChange}
-    required
-    className="w-full border rounded p-2"
-  >
-    {/* <option value="" disabled>Select Stage</option> */}
-    
- 
-          <option key="New" value="New">
-          New
-          </option>
-          <option key="Updated" value="Updated">
-          Updated
-          </option>
-          <option key="Pending" value="Pending">
-          Pending
-          </option>
-        
-    
-  </select>
-</div>
+                    {getSubCategories("Issue").map((subCategory) => (
+                      <option key={subCategory} value={subCategory}>
+                        {subCategory}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block mb-2">Sub Issue</label>
+                  <select
+                    name="sub_issue"
+                    value={newRequest.sub_issue}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border rounded p-2"
+                  >
+                    <option value="" disabled>
+                      Select Sub Issue
+                    </option>
 
+                    {getSubCategories("Sub Issue").map((subCategory) => (
+                      <option key={subCategory} value={subCategory}>
+                        {subCategory}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
+                <br />
+
+                <div>
+                  <label className="block mb-2">Status</label>
+                  <select
+                    name="status"
+                    value={newRequest.status}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border rounded p-2"
+                  >
+                    {/* <option value="" disabled>Select Status</option> */}
+
+                    <option key="Normal" value="Normal">
+                      Normal
+                    </option>
+                    <option key="Moderate" value="Moderate">
+                      Moderate
+                    </option>
+                    <option key="Critical" value="Critical">
+                      Critical
+                    </option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block mb-2">Stage</label>
+                  <select
+                    name="stage"
+                    value={newRequest.stage}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full border rounded p-2"
+                  >
+                    {/* <option value="" disabled>Select Stage</option> */}
+
+                    <option key="New" value="New">
+                      New
+                    </option>
+                    <option key="Updated" value="Updated">
+                      Updated
+                    </option>
+                    <option key="Pending" value="Pending">
+                      Pending
+                    </option>
+                  </select>
+                </div>
               </div>
 
               <div>
@@ -349,29 +338,17 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                {/* <div>
-                  <label className="block mb-2">Property ID</label>
-                  <input
-                    type="number"
-                    name="property_id"
-                    value={newRequest.property.id}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full border rounded p-2"
-                  />
-                </div> */}
                 <div>
                   <label className="block mb-2">Property ID</label>
-
-                  <select 
+                  <select
                     name="property_id"
                     value={newRequest.property.id}
                     onChange={handleInputChange}
                     required
                     className="w-full border rounded p-2"
                   >
-                    {/* <option value="">Select a tenant</option> */}
-                    {properties.map(property => (
+                    <option value="">Select a property</option>
+                    {properties.map((property) => (
                       <option key={property.id} value={property.id}>
                         {property.id} - {property.name}
                       </option>
@@ -379,19 +356,17 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
                   </select>
                 </div>
 
-
                 <div>
                   <label className="block mb-2">Tenant ID</label>
-
-                  <select 
-                    name="tenant"
+                  <select
+                    name="tenant_id"
                     value={newRequest.tenant.id}
                     onChange={handleInputChange}
                     required
                     className="w-full border rounded p-2"
                   >
-                    {/* <option value="">Select a tenant</option> */}
-                    {tenants.map(tenant => (
+                    <option value="">Select a tenant</option>
+                    {tenants.map((tenant) => (
                       <option key={tenant.id} value={tenant.id}>
                         {tenant.id} - {tenant.name}
                       </option>
