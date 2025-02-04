@@ -279,7 +279,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                   />
                 </div> */}
                                 <div>
-                  <label className="block mb-2">Property ID</label>
+                  <label className="block mb-2">Property</label>
 
                   <select 
                     name="property_id"
@@ -299,7 +299,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
 
 
                 <div>
-                  <label className="block mb-2">Tenant ID</label>
+                  <label className="block mb-2">Tenant</label>
 
                   <select 
                     name="tenant"
