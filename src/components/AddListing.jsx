@@ -116,7 +116,7 @@ const CreateListingPage = () => {
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-blue-50 text-gray-600"
               required
             />
           </div>
@@ -132,7 +132,7 @@ const CreateListingPage = () => {
               name="listingType"
               value={formData.listingType}
               onChange={handleInputChange}
-              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-blue-50 text-gray-600"
               required
             >
               <option value="Rent">Rent</option>
@@ -153,7 +153,7 @@ const CreateListingPage = () => {
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+            className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-blue-50 text-gray-600"
             rows={4}
             required
           />
@@ -172,7 +172,7 @@ const CreateListingPage = () => {
               name="availableFrom"
               value={formData.availableFrom}
               onChange={handleInputChange}
-              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-blue-50 text-gray-600"
               required
             />
           </div>
@@ -189,7 +189,7 @@ const CreateListingPage = () => {
               name="listingDate"
               value={formData.listingDate}
               onChange={handleInputChange}
-              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-blue-50 text-gray-600"
               required
             />
           </div>
@@ -206,7 +206,7 @@ const CreateListingPage = () => {
               name="expiryDate"
               value={formData.expiryDate}
               onChange={handleInputChange}
-              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+              className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-blue-50 text-gray-600"
               required
             />
           </div>
@@ -225,13 +225,13 @@ const CreateListingPage = () => {
                 name="property"
                 value={formData.property?.id || ""}
                 onChange={handlePropertyChange}
-                className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+                className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-blue-50 text-gray-600"
                 required
               >
                 <option value="">Select a property</option>
                 {properties.map((property) => (
                   <option key={property.id} value={property.id}>
-                    {property.id} - {property.name}
+                    {property.name}
                   </option>
                 ))}
               </select>
@@ -255,13 +255,13 @@ const CreateListingPage = () => {
                     ),
                   });
                 }}
-                className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-gray-200 text-gray-600"
+                className="w-full mt-2 p-3 border border-gray-300 rounded-md bg-blue-50 text-gray-600"
                 required
               >
                 <option value="">Select a person</option>
                 {tenants.map((tenant) => (
                   <option key={tenant.id} value={tenant.id}>
-                    {tenant.id} - {tenant.name}
+                   {tenant.name}
                   </option>
                 ))}
               </select>

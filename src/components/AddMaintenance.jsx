@@ -339,7 +339,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block mb-2">Property ID</label>
+                  <label className="block mb-2">Property</label>
                   <select
                     name="property_id"
                     value={newRequest.property.id}
@@ -350,14 +350,14 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
                     <option value="">Select a property</option>
                     {properties.map((property) => (
                       <option key={property.id} value={property.id}>
-                        {property.id} - {property.name}
+                        {property.name}
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block mb-2">Tenant ID</label>
+                  <label className="block mb-2">Tenant</label>
                   <select
                     name="tenant_id"
                     value={newRequest.tenant.id}
@@ -368,7 +368,7 @@ const AddMaintenanceButton = ({ onAddMaintenance }) => {
                     <option value="">Select a tenant</option>
                     {tenants.map((tenant) => (
                       <option key={tenant.id} value={tenant.id}>
-                        {tenant.id} - {tenant.name}
+                        {tenant.name}
                       </option>
                     ))}
                   </select>

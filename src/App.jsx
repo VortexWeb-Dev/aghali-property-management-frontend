@@ -87,7 +87,10 @@ const App = () => {
           
           <div className="md:hidden p-4 bg-white shadow-md">
             <button onClick={toggleSidebar}>
-              <Menu className="w-6 h-6" />
+              {
+
+              !isSidebarOpen && <Menu className="w-6 h-6" />
+              }
             </button>
           </div>
           

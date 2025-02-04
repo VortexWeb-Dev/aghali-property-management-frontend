@@ -30,9 +30,9 @@ const AddProperty = () => {
     size: "",
     marketRent: "",
     deposit: "",
-    parking: "Call for availability",
-    laundry: "In-Unit",
-    ac: "Central",
+    parking: "",
+    laundry: "",
+    ac: "",
     feature: [],
     amenities: [],
     photos: [],
@@ -272,7 +272,7 @@ const AddProperty = () => {
 
         {/* Additional Information */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="inline-block">
+          <div className="block text-gray-700 font-semibold mb-2">
             <span>Beds</span>
             <input
               type="number"
@@ -284,7 +284,60 @@ const AddProperty = () => {
             />
           </div>
 
-          <div className="inline-block">
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Parking
+            </label>
+            <select
+              name="parking"
+              className="border w-full p-2 rounded"
+              onChange={handleChange}
+              defaultValue="Covered"
+              >
+              <option value="Covered"> Covered</option>
+              <option value="Uncovered"> Uncovered</option>
+              <option value="None"> None</option>
+              {/* <option value="₹ Indian Rupee">₹ Indian Rupee</option> */}
+            </select>
+
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Laundry
+            </label>
+            <select
+              name="laundry"
+              className="border w-full p-2 rounded"
+              onChange={handleChange}
+              defaultValue="In-Unit"
+              >
+              <option value="In-Unit"> In-Unit</option>
+              <option value="Shared"> Shared</option>
+              <option value="None"> None</option>
+            </select>
+
+
+          </div>
+
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              AC Type
+            </label>
+            <select
+              name="ac"
+              className="border w-full p-2 rounded"
+              onChange={handleChange}
+              defaultValue="Central"
+              >
+              <option value="Central"> Central</option>
+              <option value="Window"> Window</option>
+              <option value="None"> None</option>
+
+            </select>
+          </div>
+
+          <div className="block text-gray-700 font-semibold mb-2">
             <span>Baths</span>
             <input
               type="number"
@@ -295,22 +348,37 @@ const AddProperty = () => {
               onChange={handleChange}
             />
           </div>
+
+          <div className="block text-gray-700 font-semibold mb-2">
+
+          <span>Size (sq.ft)</span>
           <input
             type="number"
             name="size"
             placeholder="Size (sq.ft)"
             className="border p-2 rounded w-full"
             value={formData.size}
+            
             onChange={handleChange}
-          />
+            />
+            </div>
+
+            <div className="block text-gray-700 font-semibold mb-2">
+          <span>Market Rent</span>
           <input
             type="number"
             name="marketRent"
             placeholder="Market Rent"
             className="border p-2 rounded w-full"
             value={formData.marketRent}
+            
             onChange={handleChange}
-          />
+            />
+            </div>
+
+            <div className="block text-gray-700 font-semibold mb-2">
+
+          <span>Deposit</span>
           <input
             type="number"
             name="deposit"
@@ -318,7 +386,9 @@ const AddProperty = () => {
             className="border p-2 rounded w-full"
             value={formData.deposit}
             onChange={handleChange}
-          />
+            
+            />
+            </div>
         </div>
 
         {/* Features and Amenities */}
