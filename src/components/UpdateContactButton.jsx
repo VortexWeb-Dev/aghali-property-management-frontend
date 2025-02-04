@@ -8,6 +8,7 @@ const UpdateContactButton = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [updatedContact, setUpdatedContact] = useState(existingContact);
+  const [preview, setPreview] = useState(existingContact.avatar || "");
 
   const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files);
@@ -22,7 +23,6 @@ const UpdateContactButton = ({
             }
           );
 
-          // Upload file to S3 using the pre-signed URL
           await axios.put(data.presignedUrl.presignedUrl, file, {
             headers: { "Content-Type": file.type },
           });
@@ -33,10 +33,10 @@ const UpdateContactButton = ({
 
       const imageFiles = files.filter((file) => file.type.startsWith("image/"));
 
-      setUpdatedContact((prev) => ({
-        ...prev,
-        ...(imageFiles.length > 0 && { avatar: uploadedUrl }),
-      }));
+      if (imageFiles.length > 0) {
+        setPreview(URL.createObjectURL(imageFiles[0]));
+        setUpdatedContact((prev) => ({ ...prev, avatar: uploadedUrl[0] }));
+      }
     } catch (error) {
       console.error("Error uploading files:", error);
     }
@@ -103,18 +103,18 @@ const UpdateContactButton = ({
                 />
               </div>
               <div className="mb-4">
-  <label className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-100 p-3 text-center text-gray-700 hover:bg-gray-200 transition">
-    Upload Photo
-    <input
-      type="file"
-      name="photos"
-      multiple
-      className="hidden"
-      onChange={handleFileUpload}
-    />
-  </label>
-</div>
-
+                <label className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-100 p-3 text-center text-gray-700 hover:bg-gray-200 transition">
+                  Upload Photo
+                  <input
+                    type="file"
+                    name="photos"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                </label>
+                {preview && <img src={preview} alt="Preview" className="mt-2 w-24 h-24 rounded-lg" />}
+              </div>
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"

@@ -10,38 +10,34 @@ const AddContactButton = ({ onAddContact, isLoading }) => {
     phone: "",
     avatar: "",
   });
+  const [preview, setPreview] = useState("");
 
   const handleFileUpload = async (e) => {
-    const files = Array.from(e.target.files);
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const objectUrl = URL.createObjectURL(file);
+    setPreview(objectUrl);
+    
     try {
-      const uploadedUrl = await Promise.all(
-        files.map(async (file) => {
-          const { data } = await axios.post(
-            "https://vortexwebpropertymanagement.com/api/files/presigned-url",
-            {
-              key: file.name,
-              contentType: file.type,
-            }
-          );
-
-          // Upload file to S3 using the pre-signed URL
-          await axios.put(data.presignedUrl.presignedUrl, file, {
-            headers: { "Content-Type": file.type },
-          });
-
-          return `https://aghali.s3.ap-south-1.amazonaws.com/${file.name}`;
-          // return data.publicUrl; // Store the public URL
-        })
+      const { data } = await axios.post(
+        "https://vortexwebpropertymanagement.com/api/files/presigned-url",
+        {
+          key: file.name,
+          contentType: file.type,
+        }
       );
 
-      const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+      await axios.put(data.presignedUrl.presignedUrl, file, {
+        headers: { "Content-Type": file.type },
+      });
 
       setNewContact((prev) => ({
         ...prev,
-        ...(imageFiles.length > 0 && { avatar: uploadedUrl }),
+        avatar: `https://aghali.s3.ap-south-1.amazonaws.com/${file.name}`,
       }));
     } catch (error) {
-      console.error("Error uploading files:", error);
+      console.error("Error uploading file:", error);
     }
   };
 
@@ -57,13 +53,8 @@ const AddContactButton = ({ onAddContact, isLoading }) => {
     e.preventDefault();
     onAddContact(newContact);
     setShowModal(false);
-    // Reset form
-    setNewContact({
-      name: "",
-      email: "",
-      phone: "",
-      avatar: "",
-    });
+    setNewContact({ name: "", email: "", phone: "", avatar: "" });
+    setPreview("");
   };
 
   return (
@@ -114,18 +105,32 @@ const AddContactButton = ({ onAddContact, isLoading }) => {
                 />
               </div>
               <div className="mb-4">
-                <input
-                  type="file"
-                  name="photos"
-                  multiple
-                  className="block w-full border p-2 rounded"
-                  onChange={handleFileUpload}
-                />
+                <label className="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-100 p-3 text-center text-gray-700 hover:bg-gray-200 transition">
+                  Upload Photo
+                  <input
+                    type="file"
+                    name="photo"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                </label>
               </div>
+              {preview && (
+                <div className="mb-4 flex justify-center">
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="w-24 h-24 rounded-full border"
+                  />
+                </div>
+              )}
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {
+                    setShowModal(false);
+                    setPreview("");
+                  }}
                   className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
                 >
                   Cancel

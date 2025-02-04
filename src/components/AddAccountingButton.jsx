@@ -291,7 +291,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                     {/* <option value="">Select a tenant</option> */}
                     {properties.map(property => (
                       <option key={property.id} value={property.id}>
-                        {property.id} - {property.name}
+                        {property.name}
                       </option>
                     ))}
                   </select>
@@ -311,7 +311,7 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                     {/* <option value="">Select a tenant</option> */}
                     {tenants.map(tenant => (
                       <option key={tenant.id} value={tenant.id}>
-                        {tenant.id} - {tenant.name}
+                        {tenant.name}
                       </option>
                     ))}
                   </select>
