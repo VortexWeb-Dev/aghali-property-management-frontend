@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Plus, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
-import PropertyCard from "./../components/PropertyCard";
-// import {properties as dummyProperties} from './../dummyData/data'
+import { useNavigate } from "react-router-dom";
+import PropertyCard from "../components/PropertyCard";
 
-export const PropertiesPage = () => {
+const PropertiesPage = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -23,15 +23,12 @@ export const PropertiesPage = () => {
         setLoading(false);
       }
     };
-
     fetchProperties();
   }, []);
 
-  if (loading) return <div className="p-6">Loading properties...</div>;
-  if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
-
   return (
     <div className="p-6">
+      {/* Header Section */}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Properties</h1>
@@ -49,11 +46,30 @@ export const PropertiesPage = () => {
           Add Property
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {properties.map((property, index) => (
-          <PropertyCard key={property.id || index} {...property} />
-        ))}
-      </div>
+
+      {/* Loading State */}
+      {loading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-32 bg-gray-200 animate-pulse rounded-lg"
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && <div className="p-6 text-red-500">Error: {error}</div>}
+
+      {/* Properties Grid */}
+      {!loading && !error && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {properties.map((property, index) => (
+            <PropertyCard key={property.id || index} {...property} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

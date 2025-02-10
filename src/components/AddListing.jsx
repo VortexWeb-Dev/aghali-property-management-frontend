@@ -229,11 +229,17 @@ const CreateListingPage = () => {
                 required
               >
                 <option value="">Select a property</option>
-                {properties.map((property) => (
+                {properties.length > 0
+                ? 
+                (properties.map((property) => (
                   <option key={property.id} value={property.id}>
                     {property.name}
                   </option>
-                ))}
+                )))
+                :
+                <option value="">No properties found</option>
+                }
+
               </select>
             </div>
             <div>
@@ -259,11 +265,17 @@ const CreateListingPage = () => {
                 required
               >
                 <option value="">Select a person</option>
-                {tenants.map((tenant) => (
+                {tenants.length > 0
+                ? 
+                (tenants.map((tenant) => (
                   <option key={tenant.id} value={tenant.id}>
                    {tenant.name}
                   </option>
-                ))}
+                )))
+                :
+                <option value="">No tenants found</option>
+                }
+
               </select>
             </div>
           </div>

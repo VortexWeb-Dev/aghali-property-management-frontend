@@ -289,11 +289,17 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                     className="w-full border rounded p-2"
                   >
                     {/* <option value="">Select a tenant</option> */}
-                    {properties.map(property => (
+                    {
+                      properties.length > 0
+                    ? 
+                    (properties.map(property => (
                       <option key={property.id} value={property.id}>
                         {property.name}
                       </option>
-                    ))}
+                    )))
+                    :
+                    <option value="">No properties found</option>
+                    }
                   </select>
                 </div>
 
@@ -309,11 +315,17 @@ const AddAccountingButton = ({ onAddTransaction }) => {
                     className="w-full border rounded p-2"
                   >
                     {/* <option value="">Select a tenant</option> */}
-                    {tenants.map(tenant => (
+                    {tenants.length > 0
+                    ? 
+                    (tenants.map(tenant => (
                       <option key={tenant.id} value={tenant.id}>
                         {tenant.name}
                       </option>
-                    ))}
+                    )))
+                    :
+                    <option value="">No tenants found</option>
+                    }
+
                   </select>
                 </div>
               </div>

@@ -3,6 +3,8 @@ import axios from "axios";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import AddAccountingButton from "./../components/AddAccountingButton";
 import DeleteEntity from "../components/DeleteEntity";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const AccountingPage = () => {
   const [accountings, setAccountings] = useState([]);
@@ -26,13 +28,51 @@ const AccountingPage = () => {
     fetchAccountings();
   }, []);
 
-  // Handler to add new transaction to state
   const handleAddTransaction = (newTransaction) => {
     setAccountings((prev) => [newTransaction, ...prev]);
   };
 
-  // Render loading state
-  if (loading) return <div className="p-6 text-center">Loading...</div>;
+  const SkeletonTable = () => (
+    <table className="w-full table-auto">
+      <thead>
+        <tr className="bg-gray-200">
+          {/* Use array for mapping table headers */}
+          {["Transaction Type", "Amount", "Transaction Date", "Due Date", "Status", "Payment Method", "Invoice Number", "Notes", ""].map((header, index) => (
+            <th key={index} className="py-3 px-4 text-left">
+              <Skeleton width={100} /> {/* Adjust width as needed */}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {Array(5).fill(null).map((_, index) => ( // Create 5 skeleton rows
+          <tr key={index} className="border-b">
+            {Array(9).fill(null).map((__, cellIndex) => (
+              <td key={cellIndex} className="py-3 px-4">
+                <Skeleton  /> {/* Adjust width as needed */}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+
+  if (loading) return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">
+        <Skeleton width={200} />
+      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <div><Skeleton width={150} /></div>
+      </div>
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <SkeletonTable />
+      </div>
+    </div>
+  );
+
   if (error)
     return <div className="p-6 text-red-500 text-center">Error: {error}</div>;
 
@@ -44,16 +84,6 @@ const AccountingPage = () => {
         <div>
           <AddAccountingButton onAddTransaction={handleAddTransaction} />
         </div>
-        {/* <div className="flex items-center gap-4">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-            <ArrowUp className="w-5 h-5" />
-            Income
-          </button>
-          <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
-            <ArrowDown className="w-5 h-5" />
-            Expense
-          </button>
-        </div> */}
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -72,28 +102,34 @@ const AccountingPage = () => {
             </tr>
           </thead>
           <tbody>
-            {accountings.map((accounting) => (
-              <tr key={accounting.id} className="border-b">
-                <td className="py-3 px-4">{accounting.transaction_type}</td>
-                <td className="py-3 px-4">{accounting.amount}</td>
-                <td className="py-3 px-4">
-                  {new Date(accounting.transaction_date).toLocaleString()}
-                </td>
-                <td className="py-3 px-4">
-                  {new Date(accounting.due_date).toLocaleString()}
-                </td>
-                <td className="py-3 px-4">{accounting.payment_status}</td>
-                <td className="py-3 px-4">{accounting.payment_method}</td>
-                <td className="py-3 px-4">{accounting.invoice_number}</td>
-                <td className="py-3 px-4">{accounting.notes}</td>
-                <td className="py-3 px-4">
-                  <DeleteEntity
-                    entityId={accounting.id}
-                    entityName="accountings"
-                  />
-                </td>
+            {accountings.length > 0 ? (
+              accountings.map((accounting) => (
+                <tr key={accounting.id} className="border-b">
+                  <td className="py-3 px-4">{accounting.transaction_type}</td>
+                  <td className="py-3 px-4">{accounting.amount}</td>
+                  <td className="py-3 px-4">
+                    {new Date(accounting.transaction_date).toLocaleString()}
+                  </td>
+                  <td className="py-3 px-4">
+                    {new Date(accounting.due_date).toLocaleString()}
+                  </td>
+                  <td className="py-3 px-4">{accounting.payment_status}</td>
+                  <td className="py-3 px-4">{accounting.payment_method}</td>
+                  <td className="py-3 px-4">{accounting.invoice_number}</td>
+                  <td className="py-3 px-4">{accounting.notes}</td>
+                  <td className="py-3 px-4">
+                    <DeleteEntity
+                      entityId={accounting.id}
+                      entityName="accountings"
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="text-center">No accountings found</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

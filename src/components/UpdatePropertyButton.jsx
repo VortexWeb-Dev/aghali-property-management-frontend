@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Upload, X } from "lucide-react";
 
 const UpdatePropertyButton = ({
   onUpdateProperty,
@@ -7,9 +8,11 @@ const UpdatePropertyButton = ({
   existingProperty,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [preview, setPreview] = useState(existingProperty.photos[0]);
   const [updatedProperty, setUpdatedProperty] = useState(existingProperty);
+  const [files, setFiles] = useState([]);
 
-  const handleFileUpload = async (e) => {
+  const handleImgFileUpload = async (e) => {
     const files = Array.from(e.target.files);
     try {
       const uploadedUrl = await Promise.all(
@@ -41,9 +44,53 @@ const UpdatePropertyButton = ({
         ...(imageFiles.length > 0 && { photos: uploadedUrl }),
         ...(nonImageFiles.length > 0 && { attachments: uploadedUrl }),
       }));
+      // Set preview for the first image file
+      if (imageFiles.length > 0) {
+        const fileUrl = URL.createObjectURL(imageFiles[0]);
+        setPreview(fileUrl);
+      }
     } catch (error) {
       console.error("Error uploading files:", error);
     }
+    setFiles(files);
+  };
+
+  const handleDocFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    try {
+      const uploadedUrl = await Promise.all(
+        files.map(async (file) => {
+          const { data } = await axios.post(
+            "https://vortexwebpropertymanagement.com/api/files/presigned-url",
+            {
+              key: file.name,
+              contentType: file.type,
+            }
+          );
+
+          // Upload file to S3 using the pre-signed URL
+          await axios.put(data.presignedUrl.presignedUrl, file, {
+            headers: { "Content-Type": file.type },
+          });
+
+          return `https://aghali.s3.ap-south-1.amazonaws.com/${file.name}`;
+        })
+      );
+
+      // const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+      const nonImageFiles = files.filter(
+        (file) => !file.type.startsWith("image/")
+      );
+
+      setUpdatedProperty((prev) => ({
+        ...prev,
+        ...(nonImageFiles.length > 0 && { attachments: uploadedUrl }),
+      }));
+
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
+    setFiles(files);
   };
 
   const handleInputChange = (e) => {
@@ -58,6 +105,22 @@ const UpdatePropertyButton = ({
     e.preventDefault();
     onUpdateProperty(updatedProperty);
     setShowModal(false);
+  };
+
+  const removeFile = (indexToRemove, isPhoto) => {
+    if (isPhoto) {
+      setPreview(null);
+    }else{
+      setFiles(files.filter((_, index) => index !== indexToRemove));
+    }
+
+
+
+    // Reset the input value to allow re-uploading the same file
+    const input = document.getElementById("file-upload");
+    if (input) {
+      input.value = "";
+    }
   };
 
   const generalFields = [
@@ -86,35 +149,41 @@ const UpdatePropertyButton = ({
             <h2 className="text-xl font-bold mb-4">Update Property</h2>
 
             <form className="grid grid-cols-1 gap-6" onSubmit={handleSubmit}>
-              {/* Currency Selection */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Currency
-                  </label>
-                  <select
-                    name="currency"
-                    className="border w-full p-2 rounded"
-                    onChange={handleInputChange}
-                    defaultValue={existingProperty.currency}
-                  >
-                    <option value="$ US Dollar">$ US Dollar</option>
-                    <option value="AED"> د.إ AED</option>
-                    <option value="₹ Indian Rupee">₹ Indian Rupee</option>
-                  </select>
-                </div> */}
+              {/* Photo Upload */}
+              <div className="flex items-center">
                 <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Update Property Photo
+                  <label className="group relative inline-flex items-center justify-center gap-2 px-3 py-2 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg cursor-pointer transition-colors duration-200 overflow-hidden">
+                    <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    <Upload className="w-5 h-5 animate-bounce group-hover:animate-none" />
+                    <span>Upload Property Photo</span>
+                    <input
+                      id="photo-upload"
+                      type="file"
+                      name="photos"
+                      multiple
+                      className=" w-full border p-2 rounded hidden"
+                      onChange={handleImgFileUpload}
+                      accept="image/*"
+                    />
                   </label>
-                  <input
-                    type="file"
-                    name="photos"
-                    multiple
-                    className="block w-full border p-2 rounded"
-                    onChange={handleFileUpload}
-                  />
+
                 </div>
+                {preview && (
+                  <div className="relative px-10">
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="w-36 h-36 object-cover rounded-2xl border-2 border-violet-200 shadow-2xl"
+
+                    />
+                  {/* <button
+                  onClick={() => removeFile(index, true)}
+                  className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button> */}
+                  </div>
+                )}
               </div>
 
               {/* General Information */}
@@ -205,97 +274,88 @@ const UpdatePropertyButton = ({
                 </div>
 
                 <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Parking
-            </label>
-            <select
-              name="parking"
-              className="border w-full p-2 rounded"
-              onChange={handleInputChange}
-              defaultValue={existingProperty.parking}
-              >
-              <option value="Covered"> Covered</option>
-              <option value="Uncovered"> Uncovered</option>
-              <option value="None"> None</option>
-            </select>
-
-          </div>
-
-                <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Laundry
-            </label>
-            <select
-              name="laundry"
-              className="border w-full p-2 rounded"
-              onChange={handleInputChange}
-              defaultValue={existingProperty.laundry}
-              >
-              <option value="In-Unit"> In-Unit</option>
-              <option value="Shared"> Shared</option>
-              <option value="None"> None</option>
-
-            </select>
-
-
-          </div>
+                  <label className="block text-gray-700 font-semibold mb-2">
+                    Parking
+                  </label>
+                  <select
+                    name="parking"
+                    className="border w-full p-2 rounded"
+                    onChange={handleInputChange}
+                    defaultValue={existingProperty.parking}
+                  >
+                    <option value="Covered"> Covered</option>
+                    <option value="Uncovered"> Uncovered</option>
+                    <option value="None"> None</option>
+                  </select>
+                </div>
 
                 <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              AC Type
-            </label>
-            <select
+                  <label className="block text-gray-700 font-semibold mb-2">
+                    Laundry
+                  </label>
+                  <select
+                    name="laundry"
+                    className="border w-full p-2 rounded"
+                    onChange={handleInputChange}
+                    defaultValue={existingProperty.laundry}
+                  >
+                    <option value="In-Unit"> In-Unit</option>
+                    <option value="Shared"> Shared</option>
+                    <option value="None"> None</option>
+                  </select>
+                </div>
 
-              name="ac"
-              className="border w-full p-2 rounded"
-              onChange={handleInputChange}
-              defaultValue={existingProperty.ac}
-              >
-              <option value="Central"> Central</option>
-              <option value="Window"> Window</option>
-              <option value="None"> None</option>
-
-
-            </select>
-
-          </div>
-
-                <div className="block text-gray-700 font-semibold mb-2">
-                <span>Size (sq.ft)</span>
-                <input
-                  type="number"
-                  name="size"
-                  placeholder="Size (sq.ft)"
-                  className="border p-2 rounded w-full"
-                  value={updatedProperty.size}
-
-                  onChange={handleInputChange}
-                  />
-                  </div>
-
-                <div className="block text-gray-700 font-semibold mb-2">
-                <span>Market Rent</span>
-                <input
-                  type="number"
-                  name="marketRent"
-                  placeholder="Market Rent"
-                  className="border p-2 rounded w-full"
-                  value={updatedProperty.marketRent}
-                  onChange={handleInputChange}
-                />
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">
+                    AC Type
+                  </label>
+                  <select
+                    name="ac"
+                    className="border w-full p-2 rounded"
+                    onChange={handleInputChange}
+                    defaultValue={existingProperty.ac}
+                  >
+                    <option value="Central"> Central</option>
+                    <option value="Window"> Window</option>
+                    <option value="None"> None</option>
+                  </select>
                 </div>
 
                 <div className="block text-gray-700 font-semibold mb-2">
-                <span>Deposit</span>
-                <input
-                  type="number"
-                  name="deposit"
-                  placeholder="Deposit"
-                  className="border p-2 rounded w-full"
-                  value={updatedProperty.deposit}
-                  onChange={handleInputChange}
+                  <span>Size (sq.ft)</span>
+                  <input
+                    type="number"
+                    name="size"
+                    placeholder="Size (sq.ft)"
+                    className="border p-2 rounded w-full"
+                    value={updatedProperty.size}
+                    onChange={handleInputChange}
                   />
-                  </div>
+                </div>
+
+                <div className="block text-gray-700 font-semibold mb-2">
+                  <span>Market Rent</span>
+                  <input
+                    type="number"
+                    name="marketRent"
+                    placeholder="Market Rent"
+                    className="border p-2 rounded w-full"
+                    value={updatedProperty.marketRent}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="block text-gray-700 font-semibold mb-2">
+                  <span>Deposit</span>
+                  <input
+                    type="number"
+                    name="deposit"
+                    placeholder="Deposit"
+                    className="border p-2 rounded w-full"
+                    value={updatedProperty.deposit}
+                    onChange={handleInputChange}
+                  />
+                </div>
               </div>
 
               {/* Features and Amenities */}
@@ -333,7 +393,7 @@ const UpdatePropertyButton = ({
 
               <h2 className="text-xl font-bold mb-2">Upload Attachment</h2>
               <div className="border border-dashed rounded-lg border-gray-700 h-36 flex justify-center items-center">
-                <div className="flex flex-col items-center">
+                <div className="flex gap-4 items-center overflow-y-auto">
                   {/* Hidden File Input */}
                   <input
                     id="file-upload"
@@ -341,9 +401,11 @@ const UpdatePropertyButton = ({
                     name="attachments"
                     multiple
                     className="hidden"
-                    onChange={handleFileUpload}
+                    onChange={handleDocFileUpload}
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.odt,.html,.htm,.xml,.json,.csv,.tsv,.epub,.djvu,.ps,.eps,.tex,.latex,.blend,.ai,.psd,.indd,.zip,.rar,.7z"
                   />
                   {/* Label as Stylized Button */}
+
                   <label
                     htmlFor="file-upload"
                     className="flex flex-col items-center cursor-pointer text-green-600 hover:text-green-500"
@@ -356,6 +418,29 @@ const UpdatePropertyButton = ({
                       Store documents and templates
                     </span>
                   </label>
+
+                  {files.filter((file) => !file.type.startsWith("image/")).length > 0 && (
+              <div className="mt-4 w-full max-w-md">
+                <h3 className="text-lg font-medium mb-2">Uploaded Files:</h3>
+                <ul className="space-y-2">
+                  {files.filter((file) => !file.type.startsWith("image/")).map((file, index) => (
+                    <li
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded-lg group"
+                    >
+                      <span className="text-sm text-gray-600">{file.name}</span>
+                      <button
+                        onClick={() => removeFile(index)}
+                        className="p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-gray-200 transition-colors"
+                        aria-label={`Remove ${file.name}`}
+                      >
+                        <X size={16} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
                 </div>
               </div>
               <button

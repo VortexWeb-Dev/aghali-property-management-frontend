@@ -40,11 +40,13 @@ const AddProperty = () => {
   });
 
   const [files, setFiles] = useState([]);
-  const [preview, setPreview] = useState(null);
+  const [previewImg, setPreviewImg] = useState([]);
+  const [previewDoc, setPreviewDoc] = useState([]);
   const [showFeatureInput, setShowFeatureInput] = useState(false);
   const [showAmenityInput, setShowAmenityInput] = useState(false);
   const [newFeature, setNewFeature] = useState('');
   const [newAmenity, setNewAmenity] = useState('');
+
 
   const handleAdd = (type) => {
     if (type === 'feature' && newFeature.trim()) {
@@ -77,8 +79,9 @@ const AddProperty = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileUpload = async (e) => {
+  const handleImgFileUpload = async (e) => {
     const files = Array.from(e.target.files);
+    console.log(files);
     try {
       const uploadedUrls = await Promise.all(
         files.map(async (file) => {
@@ -95,41 +98,112 @@ const AddProperty = () => {
             headers: { "Content-Type": file.type },
           });
 
+          console.log(data);
           return `https://aghali.s3.ap-south-1.amazonaws.com/${file.name}`;
           // return data.publicUrl; // Store the public URL
         })
       );
 
       const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+
+
+      setFormData((prev) => ({
+        ...prev,
+        ...(imageFiles.length > 0 && { photos: uploadedUrls })
+      }));
+
+      const fileUrl = URL.createObjectURL(...imageFiles);
+      console.log(fileUrl);
+      
+      setPreviewImg((prev) => [...prev, fileUrl]);
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    }
+
+
+    setFiles(files);
+  };
+
+  const handleDocFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    console.log(files);
+    try {
+      const uploadedUrls = await Promise.all(
+        files.map(async (file) => {
+          const { data } = await axios.post(
+            "https://vortexwebpropertymanagement.com/api/files/presigned-url",
+            {
+              key: file.name,
+              contentType: file.type,
+            }
+          );
+
+          // Upload file to S3 using the pre-signed URL
+          await axios.put(data.presignedUrl.presignedUrl, file, {
+            headers: { "Content-Type": file.type },
+          });
+
+          console.log(data);
+          return `https://aghali.s3.ap-south-1.amazonaws.com/${file.name}`;
+          // return data.publicUrl; // Store the public URL
+        })
+      );
+
       const nonImageFiles = files.filter(
         (file) => !file.type.startsWith("image/")
       );
 
       setFormData((prev) => ({
         ...prev,
-        ...(imageFiles.length > 0 && { photos: uploadedUrls }),
         ...(nonImageFiles.length > 0 && { attachments: uploadedUrls }),
       }));
 
-      const fileUrl = URL.createObjectURL(imageFiles[0]);
+      console.log(nonImageFiles);
+      const fileUrl = URL.createObjectURL(...nonImageFiles);
       console.log(fileUrl);
       
-      setPreview(fileUrl);
+
+      setPreviewDoc((prev) => [...prev, fileUrl]);
     } catch (error) {
       console.error("Error uploading files:", error);
     }
 
+
     setFiles(files);
   };
 
-  const removeFile = (indexToRemove) => {
-    setFiles(files.filter((_, index) => index !== indexToRemove));
-
-    // Reset the input value to allow re-uploading the same file
-    const input = document.getElementById("file-upload");
-    if (input) {
-      input.value = "";
+  const removeFile = (indexToRemove, isPhoto) => {
+    if(isPhoto){
+      const photoInput = document.getElementById("photo-upload");
+      if (photoInput) {
+        photoInput.value = "";
+      }
+      setPreviewImg(null);
+      // const photoFiles = files.filter((file) => file.type.startsWith("image/"));
+      // setFiles(files.filter((file) => !file.type.startsWith("image/")));
+      setFormData(prev => ({
+        ...prev,
+        photos: prev.photos.filter((_, i) => i !== indexToRemove)
+      }));
     }
+
+
+    else{
+      const input = document.getElementById("file-upload");
+      if (input) {
+        input.value = "";
+      }
+      setFiles(files.filter((_, index) => index !== indexToRemove));
+
+      setFormData(prev => ({
+        ...prev,
+        attachments: prev.attachments.filter((_, i) => i !== indexToRemove)
+      }))
+      setPreviewDoc(prev => prev.filter((_, i) => i !== indexToRemove))
+
+      // Reset the input value to allow re-uploading the same file
+    }
+      
   };
 
   const handleSubmit = async (e) => {
@@ -178,33 +252,33 @@ const AddProperty = () => {
               type="file"
               name="photos"
               className="w-full border rounded hidden"
-              onChange={handleFileUpload}
+              onChange={handleImgFileUpload}
+              multiple= {true}
               accept="image/*"
               />
               </label>
-
-            {/* <label className="group relative inline-flex items-center justify-center gap-2 px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg cursor-pointer transition-colors duration-200 overflow-hidden">
-              <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              <Upload className="w-5 h-5 animate-bounce group-hover:animate-none" />
-              <span>Upload Image</span>
-              <input type="file" accept="image/*" className="hidden" />
-              </label> */}
+           
           </div>
-        {preview && (
+        {previewImg && (
           <div className="relative px-10">
-          <img 
-            src={preview} 
-            alt="Preview" 
-            className="w-36 h-36 object-cover rounded-2xl border-2 border-violet-200 shadow-2xl"
-            />
-          {/* <button
-            onClick={handleRemove}
-            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
-            >
-            <X className="w-4 h-4" />
-            </button> */}
-        </div>
-      )}
+            {previewImg.map((url, index) => (
+              <div key={index} className="flex items-center justify-center">
+
+                <img 
+                  src={url}
+                  alt="Preview" 
+                  className="w-36 h-36 object-cover rounded-2xl border-2 border-violet-200 shadow-2xl"
+                />
+                <button
+                  onClick={() => removeFile(index, true)}
+                  className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       </div>
     
@@ -530,7 +604,8 @@ const AddProperty = () => {
               name="attachments"
               multiple
               className="hidden"
-              onChange={handleFileUpload}
+              onChange={handleDocFileUpload}
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.odt,.html,.htm,.xml,.json,.csv,.tsv,.epub,.djvu,.ps,.eps,.tex,.latex,.blend,.ai,.psd,.indd,.zip,.rar,.7z"
             />
             {/* Label as Stylized Button */}
             <label
@@ -541,22 +616,23 @@ const AddProperty = () => {
                 <span className="text-3xl font-bold">+</span>
               </div>
               <span className="mt-2 text-lg font-medium">Upload</span>
-              <span className="font-thin">Documents and Templates</span>
+              <span className="font-thin">Store Documents and Templates</span>
             </label>
 
 
-            {files.length > 0 && (
+            {
+            files.filter((file) => !file.type.startsWith("image/")).length > 0 && (
               <div className="mt-4 w-full max-w-md">
                 <h3 className="text-lg font-medium mb-2">Uploaded Files:</h3>
                 <ul className="space-y-2">
-                  {files.map((file, index) => (
+                  {files.filter((file) => !file.type.startsWith("image/")).map((file, index) => (
                     <li
                       key={index}
                       className="flex items-center justify-between p-2 bg-gray-50 rounded-lg group"
                     >
                       <span className="text-sm text-gray-600">{file.name}</span>
                       <button
-                        onClick={() => removeFile(index)}
+                        onClick={() => removeFile(index, false)}
                         className="p-1 rounded-full text-gray-400 hover:text-red-500 hover:bg-gray-200 transition-colors"
                         aria-label={`Remove ${file.name}`}
                       >
